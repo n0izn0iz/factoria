@@ -1,26 +1,23 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <SDL2/SDL.h>
-
+#include <string.h>
 #include "game.h"
-#include "graphics.h"
-#include "xp_sleep.h"
+#include "save.h"
 
-int		main(void)
+int		main(int argc, char **argv)
 {
-	t_sdlh	sdlh;
-	t_gfx	gfx;
-	t_game	game;
+	t_game	*game;
+	bool	force;
 
-	game_create(&game, &sdlh, &gfx);
-	while(!sdlh.quitflag)
+	if (argc > 1 && strcmp(argv[1], "-f") == 0)
 	{
-		sdlh_handle_events(&sdlh);
-		game_update(&game);
-		gfx_update(&game);
-		sdlh_update_window(&sdlh);
-		Sleep(5);
+		printf("You don't want to die, do you?\n");
+		force = true;
 	}
-	sdlh_cleanup(&sdlh);
+	else
+		force = false;
+	game = save_load("saves/current.save", force);
+	while (game->running)
+		game_loop(game);
+	save_create("saves/current.save", game);
+	game_destroy(game);
 	return (0);
 }

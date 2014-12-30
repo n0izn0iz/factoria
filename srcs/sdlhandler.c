@@ -26,21 +26,36 @@ uint32_t		colmix(uint32_t cola, uint32_t colb, float gain)
 	return ((rr << 16) + (gr << 8) + br);
 }
 
+static void		displayrendererinfo(SDL_Renderer*	renderer, int drivernum)
+{
+	SDL_RendererInfo	info;
+
+	if (renderer != NULL)
+		SDL_GetRendererInfo(renderer, &info);
+	else
+		SDL_GetRenderDriverInfo(drivernum, &info);
+	printf("Name: %s\n", info.name);
+	print_renflag(info.flags);
+	printf("Max texture width: %i, height: %i\n", info.max_texture_width, info.max_texture_height);
+	printf("%i supported texture formats\n", info.num_texture_formats);
+}
+
 void			sdlh_init(t_sdlh*	env)
 {
-	if (SDL_Init(0))
+	if (SDL_Init(SDL_INIT_VIDEO))
 		sdl_error("Unable to initialize SDL: %s\n");
 	atexit(SDL_Quit);
-	if ((env->window = SDL_CreateWindow("sdlh", 0, 0, WIN_WIDTH, WIN_HEIGHT, 0)) == NULL)
+	if ((env->window = SDL_CreateWindow("factoria", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_RESIZABLE)) == NULL)
 		sdl_error("Unable to create window: %s\n");
 	if ((env->renderer = SDL_CreateRenderer(env->window, -1, 0)) == NULL)
 		sdl_error("Unable to create renderer: %s\n");
-	if ((env->texture = SDL_CreateTexture(env->renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STATIC, WIN_WIDTH, WIN_HEIGHT)) == NULL)
+	printf ("Bound render driver:\n");
+	displayrendererinfo(env->renderer, 0);
+	if ((env->texture = SDL_CreateTexture(env->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, WIN_WIDTH, WIN_HEIGHT)) == NULL)
 		sdl_error("Unable to create Texture: %s\n");
-	env->quitflag = false;
-	env->turretflag = false;
-	env->mov_x = 0;
-	env->mov_y = 0;
+	env->surface = SDL_CreateRGBSurfaceFrom(env->pixels, WIN_WIDTH, WIN_HEIGHT, 32, WIN_WIDTH * sizeof(uint32_t), 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+	if (env->surface == NULL)
+		printf("ERROR: %s\n", SDL_GetError());
 }
 
 void			sdlh_putpixel(t_sdlh *sdlh, uint32_t x, uint32_t y, uint32_t pixel)
@@ -61,7 +76,7 @@ SDL_Surface*	sdlh_loadandconvert(char *name)
 	free(tmp);
 	if (!image)
 		fprintf(stderr, "%s\n", IMG_GetError());
-	conversion = SDL_ConvertSurfaceFormat(image, SDL_PIXELFORMAT_RGB888, 0);
+	conversion = SDL_ConvertSurfaceFormat(image, SDL_PIXELFORMAT_ARGB8888, 0);
 	SDL_FreeSurface(image);
 	return (conversion);
 }
@@ -76,36 +91,12 @@ void			sdlh_mixpixel(t_sdlh *sdlh, uint32_t x, uint32_t y, uint32_t pixel, float
 	*currpixel = colmix(pixel, *currpixel, gain);
 }
 
-void			sdlh_handle_events(t_sdlh*	env)
-{
-	SDL_Event e;
-	const Uint8* kstate;
-	
-	while(SDL_PollEvent(&e))
-	{
-		if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE))
-			env->quitflag = true;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_t)
-			env->turretflag = true;
-	}
-	kstate = SDL_GetKeyboardState(NULL);
-	env->mov_x = 0;
-	env->mov_y = 0;
-	if (kstate[SDL_GetScancodeFromKey(SDLK_d)])
-		env->mov_x += 1;
-	if (kstate[SDL_GetScancodeFromKey(SDLK_q)])
-		env->mov_x -= 1;
-	if (kstate[SDL_GetScancodeFromKey(SDLK_z)])
-		env->mov_y += 1;
-	if (kstate[SDL_GetScancodeFromKey(SDLK_s)])
-		env->mov_y -= 1;
-}
-
 void			sdlh_update_window(const t_sdlh*	env)
 {
 	SDL_UpdateTexture(env->texture, NULL, env->pixels, WIN_WIDTH * sizeof(uint32_t));
 	SDL_RenderCopy(env->renderer, env->texture, NULL, NULL);
 	SDL_RenderPresent(env->renderer);
+	SDL_RenderClear(env->renderer);
 }
 
 void			sdlh_cleanup(t_sdlh*	env)
@@ -113,5 +104,7 @@ void			sdlh_cleanup(t_sdlh*	env)
 	SDL_DestroyTexture(env->texture);
 	SDL_DestroyRenderer(env->renderer);
 	SDL_DestroyWindow(env->window);
+	SDL_FreeSurface(env->surface);
+	SDL_Quit();
 }
 

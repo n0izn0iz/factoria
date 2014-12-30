@@ -3,7 +3,7 @@ SRCS	=$(wildcard srcs/*.c)
 OBJS	=$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 HDRS	=includes
 C_FLAGS	=-Wall -Wextra -Werror -g
-LD_FLAGS=-lm -lSDL2 -lSDL2_image -g
+LD_FLAGS=-lm -lSDL2 -lSDL2_image -lSDL2_gfx -g
 
 all: $(NAME)
 
