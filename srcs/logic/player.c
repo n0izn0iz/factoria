@@ -1,4 +1,4 @@
-#include "player.h"
+#include "logic/player.h"
 
 void			player_updatedirection(t_player* player, int mov_x, int mov_y)
 {

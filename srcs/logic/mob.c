@@ -1,10 +1,10 @@
-#include "mob.h"
+#include "logic/mob.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "player.h"
-#include "intersect.h"
+#include "logic/player.h"
+#include "misc/intersect.h"
 
 static t_mob*	mob_createlist(double x, double y, int time)
 {

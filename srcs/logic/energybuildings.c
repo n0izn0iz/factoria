@@ -1,7 +1,7 @@
-#include "energybuildings.h"
+#include "logic/energybuildings.h"
 
 #include <stdlib.h>
-#include "grid.h"
+#include "misc/grid.h"
 
 void		solarpan_add(t_solarpan** panels, int x, int y, t_nrgnetwork* net)
 {

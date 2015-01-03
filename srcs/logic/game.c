@@ -1,6 +1,6 @@
-#include "game.h"
-#include "events.h"
-#include "xp_sleep.h"
+#include "logic/game.h"
+#include "misc/events.h"
+#include "misc/xp_sleep.h"
 #include <time.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -121,7 +121,7 @@ void		game_loop(t_game *game)
 	}
 	bullet_update(&(game->bullets), game->player, game->mobs);
 	mob_update(&(game->mobs), game->player, game->tickcount);
-	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events->drawgrid);
+	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events->drawgrid, game->nrgnet->capacity);
 	game->tickcount += 1;
 	Sleep(5);
 }

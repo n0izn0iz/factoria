@@ -1,5 +1,5 @@
-#include "drawgrid.h"
-#include "sdlhandler.h"
+#include "graphics/drawgrid.h"
+#include "misc/sdlhandler.h"
 
 void		drawgrid(t_sdlh* sdlh, double offsetx, double offsety)
 {

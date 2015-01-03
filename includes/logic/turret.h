@@ -1,8 +1,8 @@
 #ifndef TURRET_H
 # define TURRET_H
 
-#include "bullet.h"
-#include "energy.h"
+#include "logic/bullet.h"
+#include "logic/energy.h"
 
 #define EXPAND_SIZE 32
 

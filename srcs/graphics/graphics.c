@@ -2,13 +2,13 @@
 #include <SDL2/SDL2_rotozoom.h>
 
 #include "assert.h"
-#include "graphics.h"
-#include "player.h"
-#include "strjoin.h"
-#include "sprite.h"
-#include "turret.h"
-#include "drawgrid.h"
-#include "energybuildings.h"
+#include "graphics/graphics.h"
+#include "logic/player.h"
+#include "misc/strjoin.h"
+#include "graphics/sprite.h"
+#include "logic/turret.h"
+#include "graphics/drawgrid.h"
+#include "logic/energybuildings.h"
 
 #define LIFEBAR_WIDTH 5
 
@@ -118,6 +118,28 @@ static void			gfx_drawlife(t_sdlh* sdlh, int x, int y, int scale, int width, int
 	}
 }
 
+static void			gfx_drawenergy(t_sdlh* sdlh, int nrglvl, int x, int y, int scale, int width)
+{
+	int i;
+	int j;
+	i = x;
+	while (i < x + width)
+	{
+		j = y;
+		while (j < y + nrglvl * scale / 100)
+		{
+			if (width > 2 && (i == x || j == y || i == x + width - 1 || j == y + nrglvl * scale / 100 - 1))
+				sdlh_putpixel(sdlh, i, -j, 0x000000);
+			else if (nrglvl >= 1000)
+				sdlh_putpixel(sdlh, i, -j, 0x5555FF);
+			else
+				sdlh_putpixel(sdlh, i, -j, 0xFF0000);
+			j++;
+		}
+		i++;
+	}
+}
+
 static void			gfx_drawsoil(t_sprite* soilsprite, SDL_Surface* dest, int winx, int winy, int scale)
 {
 	int numw, numh;
@@ -208,7 +230,7 @@ void			gfx_init(t_gfx *gfx)
 	gfx->camy = 0;
 }
 
-void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, t_solarpan* panels, t_batbuilding* bats, int scale, int time, bool shoulddrawgrid)
+void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, t_solarpan* panels, t_batbuilding* bats, int scale, int time, bool shoulddrawgrid, int energylvl)
 {
 	unsigned int			x;
 	unsigned int			y;
@@ -273,6 +295,7 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	if (shoulddrawgrid)
 		drawgrid(gfx->sdlh, player->x % GRID_SIZE, player->y % GRID_SIZE);
 	gfx_drawlife(gfx->sdlh, 0, -WIN_HEIGHT + 1, 2, LIFEBAR_WIDTH, player->life, PLAYER_MAXLIFE);
+	gfx_drawenergy(gfx->sdlh, energylvl, WIN_WIDTH - 10, -WIN_HEIGHT + 1, 1, 10);
 	sdlh_update_window(gfx->sdlh);
 }
 

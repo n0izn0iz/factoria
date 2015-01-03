@@ -1,7 +1,7 @@
 #ifndef PLAYERREND_H
 # define PLAYERREND_H
 
-#include "sprite.h"
+#include "graphics/sprite.h"
 
 typedef struct	s_playersprite
 {

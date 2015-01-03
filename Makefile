@@ -1,22 +1,22 @@
 NAME	=factoria
 LIBNAME =$(NAME).so
-SRCS	=$(shell find srcs -name "*.c" | sed 's/\n/ /')
+SRCS	!= find srcs -name "*.c"
 OBJS	=$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 LIBOBJS =$(patsubst objs/main.o,,$(OBJS))
 HDRS	=includes
-C_FLAGS	=-Wall -Wextra -Werror -g -fPIC
+C_FLAGS	=-Wall -Wextra -Werror -g -fPIC -I$(HDRS)
 LD_FLAGS=-lm -lSDL2 -lSDL2_image -lSDL2_gfx -g
 
 all: $(NAME)
 
 $(NAME): objs/main.o $(LIBNAME)
-	gcc -o $@ $^ $(LD_FLAGS)
+	gcc -o $@ $(LD_FLAGS) $^
 
 $(LIBNAME): $(LIBOBJS)
 	gcc -shared -o $@ $^
 
 objs/%.o: srcs/%.c
-	gcc -o $@ -c $^ $(C_FLAGS) -I$(HDRS)
+	gcc -c -o $@ $(C_FLAGS) $^
 
 clean:
 	rm -f $(OBJS)

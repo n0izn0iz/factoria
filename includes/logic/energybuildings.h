@@ -1,7 +1,7 @@
 #ifndef ENERGY_BUILDINGS_H
 #define ENERGY_BUILDINGS_H
 
-#include "energy.h"
+#include "logic/energy.h"
 
 typedef struct		s_solarpan
 {

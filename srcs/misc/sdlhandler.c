@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <SDL2/SDL_image.h>
 
-#include "strjoin.h"
-#include "sdlhandler.h"
+#include "misc/strjoin.h"
+#include "misc/sdlhandler.h"
 
 #define LAST(k, n) ((k) & ((1<<(n))-1))
 #define MID(k, m, n) LAST((k)>>(m),((n)-(m)))

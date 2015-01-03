@@ -1,7 +1,7 @@
 #ifndef MOB_H
 #define MOB_H
 
-#include "player.h"
+#include "logic/player.h"
 
 #define MOB_MAXLIFE 50
 #define MOB_SIZE 25

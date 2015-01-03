@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <math.h>
-#include "turret.h"
-#include "bullet.h"
-#include "grid.h"
-#include "intersect.h"
-#include "energy.h"
+#include "logic/turret.h"
+#include "logic/bullet.h"
+#include "misc/grid.h"
+#include "misc/intersect.h"
+#include "logic/energy.h"
 
 #define TURRET_RANGE		250
 #define SHOOT_FREQ			5

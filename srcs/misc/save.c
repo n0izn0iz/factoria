@@ -1,7 +1,7 @@
-#include "save.h"
+#include "misc/save.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
-#include "turret.h"
+#include "logic/turret.h"
 
 void	save_create(const char *path, const t_game* game)
 {

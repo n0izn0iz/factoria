@@ -2,8 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "bullet.h"
-#include "intersect.h"
+#include "logic/bullet.h"
+#include "misc/intersect.h"
 
 # define BULLET_VELOCITY 35
 

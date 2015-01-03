@@ -2,14 +2,14 @@
 #define GAME_H
 
 #include <stdbool.h>
-#include "events.h"
-#include "graphics.h"
-#include "player.h"
-#include "turret.h"
-#include "bullet.h"
-#include "energy.h"
-#include "energybuildings.h"
-#include "mob.h"
+#include "misc/events.h"
+#include "graphics/graphics.h"
+#include "logic/player.h"
+#include "logic/turret.h"
+#include "logic/bullet.h"
+#include "logic/energy.h"
+#include "logic/energybuildings.h"
+#include "logic/mob.h"
 
 typedef struct		s_game
 {

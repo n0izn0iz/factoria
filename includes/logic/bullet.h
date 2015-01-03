@@ -1,8 +1,8 @@
 #ifndef BULLET_H
 # define BULLET_H
 
-#include "player.h"
-#include "mob.h"
+#include "logic/player.h"
+#include "logic/mob.h"
 
 typedef struct		s_bullet
 {

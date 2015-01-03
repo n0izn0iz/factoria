@@ -1,7 +1,7 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#include "sprite.h"
+#include "graphics/sprite.h"
 
 typedef struct		s_anim
 {

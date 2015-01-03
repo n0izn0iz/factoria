@@ -12,8 +12,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "game.h"
-#include "sdlhandler.h"
+#include "logic/game.h"
+#include "misc/sdlhandler.h"
 
 static void		ft_swap(int *a, int *b)
 {
