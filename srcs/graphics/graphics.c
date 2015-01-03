@@ -9,6 +9,7 @@
 #include "logic/turret.h"
 #include "graphics/drawgrid.h"
 #include "logic/energybuildings.h"
+#include <stdlib.h>
 
 #define LIFEBAR_WIDTH 5
 
@@ -224,6 +225,7 @@ void			gfx_init(t_gfx *gfx)
 	static t_sdlh sdlh;
 
 	gfx->sdlh = &sdlh;
+	fonts_init();
 	sdlh_init(gfx->sdlh);
 	gfx_loadsprites(gfx);
 	gfx->camx = 0;
@@ -239,6 +241,10 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	t_bullet	*bullet;
 	int winx;
 	int winy;
+	SDL_Surface*	testtext;
+	static double fps = 0;
+	static uint32_t lastframe = 0;
+	char	str[20];
 
 	gfx->camx = player->x / scale;
 	gfx->camy = player->y / scale;
@@ -296,6 +302,12 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 		drawgrid(gfx->sdlh, player->x % GRID_SIZE, player->y % GRID_SIZE);
 	gfx_drawlife(gfx->sdlh, 0, -WIN_HEIGHT + 1, 2, LIFEBAR_WIDTH, player->life, PLAYER_MAXLIFE);
 	gfx_drawenergy(gfx->sdlh, energylvl, WIN_WIDTH - 10, -WIN_HEIGHT + 1, 1, 10);
+	fps = (fps * 0.9) + ((1000.0 / (SDL_GetTicks() - lastframe)) * 0.1);
+	lastframe = SDL_GetTicks();
+	snprintf(str, 20, "FPS:%.0f", fps);
+	testtext = fonts_texttosurface(str, "fonts/8bit.ttf", 0x000, gfx->sdlh->surface->format);
+	SDL_BlitSurface(testtext, NULL, gfx->sdlh->surface, NULL);
+	SDL_FreeSurface(testtext);
 	sdlh_update_window(gfx->sdlh);
 }
 

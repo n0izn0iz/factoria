@@ -6,6 +6,7 @@
 #include "misc/sdlhandler.h"
 #include "graphics/playerrend.h"
 #include "graphics/sprite.h"
+#include "graphics/fonts.h"
 #include "logic/turret.h"
 #include "logic/bullet.h"
 #include "logic/player.h"
