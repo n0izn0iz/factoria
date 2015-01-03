@@ -130,7 +130,7 @@ static void			gfx_drawenergy(t_sdlh* sdlh, int nrglvl, int x, int y, int scale, 
 		{
 			if (width > 2 && (i == x || j == y || i == x + width - 1 || j == y + nrglvl * scale / 100 - 1))
 				sdlh_putpixel(sdlh, i, -j, 0x000000);
-			else if (nrglvl >= 1000)
+			else if (nrglvl >= 5000)
 				sdlh_putpixel(sdlh, i, -j, 0x5555FF);
 			else
 				sdlh_putpixel(sdlh, i, -j, 0xFF0000);

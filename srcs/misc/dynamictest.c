@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void	factoriadynamictest()
+void	factoriadynamictest(void)
 {
-	printf("VICTORY!");
+	/*printf("VICTORY!");*/
 }

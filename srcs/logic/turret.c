@@ -8,7 +8,6 @@
 
 #define TURRET_RANGE		250
 #define SHOOT_FREQ			5
-#define TURRET_NRGCONS		1
 #define TURRET_ANGMOMENT	0.05
 
 void			turret_add(t_turret** array, int x, int y, int *size, int time, t_nrgnetwork *nrgnet)

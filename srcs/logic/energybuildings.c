@@ -31,6 +31,32 @@ void		solarpan_add(t_solarpan** panels, int x, int y, t_nrgnetwork* net)
 	curr->next = newpanel;
 }
 
+int solarpan_getcount(t_solarpan* panels)
+{
+	int i;
+
+	i = 0;
+	while (panels)
+	{
+		i++;
+		panels = panels->next;
+	}
+	return (i);
+}
+
+int batbuilding_getcount(t_batbuilding* bats)
+{
+	int i;
+
+	i = 0;
+	while (bats)
+	{
+		i++;
+		bats = bats->next;
+	}
+	return (i);
+}
+
 void		batbuilding_add(t_batbuilding** buildings, int x, int y, t_nrgnetwork* net)
 {
 	t_batbuilding*		curr;

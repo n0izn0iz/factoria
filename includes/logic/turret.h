@@ -5,6 +5,7 @@
 #include "logic/energy.h"
 
 #define EXPAND_SIZE 32
+#define TURRET_NRGCONS		5
 
 typedef struct		s_turret
 {
