@@ -8,6 +8,7 @@
 #include "sprite.h"
 #include "turret.h"
 #include "drawgrid.h"
+#include "energybuildings.h"
 
 #define LIFEBAR_WIDTH 5
 
@@ -66,6 +67,18 @@ static void			gfx_loadsprites(t_gfx *gfx)
 	sw = image->w;
 	sh = image->h;
 	gfx->soilsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	image = sdlh_loadandconvert("ship.png");
+	sw = image->w;
+	sh = image->h;
+	gfx->shipsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	image = sdlh_loadandconvert("solarpan.png");
+	sw = image->w;
+	sh = image->h;
+	gfx->solarpansprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	image = sdlh_loadandconvert("generator.png");
+	sw = image->w;
+	sh = image->h;
+	gfx->batsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
 }
 
 static void		mixsprite(SDL_Surface *dest, t_sprite* sprite, int x, int y, double scale)
@@ -133,10 +146,10 @@ static void			gfx_drawbullet(t_bullet	*bullet, t_sdlh *sdlh, int scale, int winx
 
 	orig.x = bullet->ox / scale - winx - ((bullet->dx - bullet->ox) / scale / bullettrail);
 	orig.y = bullet->oy / scale - winy - ((bullet->dy - bullet->oy) / scale / bullettrail);
-	orig.color = 0x0;
+	orig.color = 0xFFEE55;
 	dest.x = bullet->ox / scale - winx;
 	dest.y = bullet->oy / scale - winy;
-	dest.color = 0xAAAAFF;
+	dest.color = 0x0;
 	plot_line(orig, dest, sdlh);
 	orig.x += 1;
 	orig.y += 1;
@@ -195,7 +208,7 @@ void			gfx_init(t_gfx *gfx)
 	gfx->camy = 0;
 }
 
-void			gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, int scale, int time, bool shoulddrawgrid)
+void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, t_solarpan* panels, t_batbuilding* bats, int scale, int time, bool shoulddrawgrid)
 {
 	unsigned int			x;
 	unsigned int			y;
@@ -209,7 +222,6 @@ void			gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bull
 	gfx->camy = player->y / scale;
 	winx = gfx->camx - (WIN_WIDTH / 2);
 	winy = gfx->camy + (WIN_HEIGHT / 2);
-	
 	x = 0;
 	while (x < WIN_WIDTH)
 	{
@@ -232,12 +244,23 @@ void			gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bull
 	else
 		sprite = gfx->playersprite->front;
 	gfx_drawsoil(gfx->soilsprite, gfx->sdlh->surface, winx, winy, scale);
+	mixsprite(gfx->sdlh->surface, gfx->shipsprite, -winx, -winy, scale);
 	x = 0;
 	while (x < (unsigned int)turretcount)
 	{
 		turret = turrets + x;
 		gfx_drawturret(gfx->sdlh, gfx->turretsprite, turret, scale, winx, winy);
 		x++;
+	}
+	while (panels)
+	{
+		mixsprite(gfx->sdlh->surface, gfx->solarpansprite, panels->x / scale - winx, panels->y / scale - winy, scale);
+		panels = panels->next;
+	}
+	while (bats)
+	{
+		mixsprite(gfx->sdlh->surface, gfx->batsprite, bats->x / scale - winx, bats->y / scale - winy, scale);
+		bats = bats->next;
 	}
 	gfx_drawmobs(gfx->sdlh, gfx->mobanim, mobs, scale, winx, winy, time);
 	mixsprite(gfx->sdlh->surface, sprite, player->x / scale - winx, player->y / scale - winy, scale);

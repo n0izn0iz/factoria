@@ -5,16 +5,24 @@
 int		main(int argc, char **argv)
 {
 	t_game	*game;
-	bool	force;
+	bool	force, new;
 
-	if (argc > 1 && strcmp(argv[1], "-f") == 0)
+	force = false;
+	new = false;
+	if (argc > 1)
 	{
-		printf("You don't want to die, do you?\n");
-		force = true;
+		if (strcmp(argv[1], "-f") == 0)
+		{
+			printf("You don't want to die, do you?\n");
+			force = true;
+		}
+		else if (strcmp(argv[1], "-n") == 0)
+		{
+			printf("Creating new save!\n");
+			new = true;
+		}
 	}
-	else
-		force = false;
-	game = save_load("saves/current.save", force);
+	game = save_load("saves/current.save", force, new);
 	while (game->running)
 		game_loop(game);
 	save_create("saves/current.save", game);

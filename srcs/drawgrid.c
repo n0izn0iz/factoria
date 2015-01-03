@@ -29,3 +29,15 @@ void		drawgrid(t_sdlh* sdlh, double offsetx, double offsety)
 		i++;
 	}
 }
+
+void	grid_align(int* x, int* y)
+{
+	if (*x > 0)
+		(*x) = *x - ((*x) % GRID_SIZE) + (GRID_SIZE / 2);
+	else
+		(*x) = *x - ((*x) % GRID_SIZE) - (GRID_SIZE / 2);
+	if (*y > 0)
+		(*y) = *y - ((*y) % GRID_SIZE) + (GRID_SIZE / 2);
+	else
+		(*y) = *y - ((*y) % GRID_SIZE) - (GRID_SIZE / 2);
+}

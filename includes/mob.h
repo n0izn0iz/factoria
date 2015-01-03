@@ -5,7 +5,7 @@
 
 #define MOB_MAXLIFE 50
 #define MOB_SIZE 25
-#define MOB_HITFREQ 50
+#define MOB_HITFREQ 35
 #define MOB_DMG 15
 
 typedef struct		s_mob

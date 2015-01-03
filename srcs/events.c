@@ -14,6 +14,8 @@ t_evnh*		events_create()
 		env->turretflag = false;
 		env->healflag = false;
 		env->drawgrid = false;
+		env->solarpanelflag = false;
+		env->batteryflag = false;
 		env->mov_x = 0;
 		env->mov_y = 0;
 		env->scale = 1;
@@ -42,6 +44,10 @@ void		events_update(t_evnh* env)
 			env->scale += env->scale < 4 ? 1 : 0;
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_KP_PLUS)
 			env->scale -= env->scale > 1 ? 1 : 0;
+		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_p)
+			env->solarpanelflag = true;
+		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_b)
+			env->batteryflag = true;
 	}
 	kstate = SDL_GetKeyboardState(NULL);
 	env->mov_x = 0;

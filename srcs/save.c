@@ -34,7 +34,7 @@ void	save_create(const char *path, const t_game* game)
 	SDL_RWclose(file);
 }
 
-t_game*	save_load(const char *path, bool force)
+t_game*	save_load(const char *path, bool force, bool donew)
 {
 	t_game*		game;
 	t_game*		save;
@@ -54,7 +54,7 @@ t_game*	save_load(const char *path, bool force)
 	SDL_RWread(file, &usesave, sizeof(bool), 1);
 	if (force)
 		usesave = true;
-	if (!usesave)
+	if (!usesave || donew)
 		return (game);
 	save = malloc(sizeof(t_game));
 	SDL_RWread(file, save, sizeof(t_game), 1);

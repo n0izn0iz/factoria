@@ -10,6 +10,8 @@ typedef struct		s_evnh
 	bool			healflag;
 	bool			spawnmobflag;
 	bool			drawgrid;
+	bool			batteryflag;
+	bool			solarpanelflag;
 	int				mov_x;
 	int				mov_y;
 	int				scale;

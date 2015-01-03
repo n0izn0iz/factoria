@@ -5,6 +5,6 @@
 #include "game.h"
 
 void		save_create(const char *path, const t_game* game);
-t_game*		save_load(const char *path, bool force);
+t_game*		save_load(const char *path, bool force, bool donew);
 
 #endif
