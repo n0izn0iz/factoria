@@ -91,7 +91,6 @@ void		game_loop(t_game *game)
 		game->events->batteryflag = false;
 	}
 	nrg_updatenetwork(&game->nrgnet);
-	nrg_printnetwork(game->nrgnet);
 	if (game->events->spawnmobflag == true)
 	{
 		mob_add(&(game->mobs), playerx, playery, game->tickcount);
