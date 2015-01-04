@@ -23,6 +23,7 @@ typedef struct	s_gfx
 	t_sprite			*shipsprite;
 	t_sprite			*batsprite;
 	t_anim				*mobanim;
+	t_sprite			*standsprite;
 	int					camx;
 	int					camy;
 }				t_gfx;

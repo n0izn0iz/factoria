@@ -89,6 +89,19 @@ void		mob_destroy(t_mob* list)
 	}
 }
 
+
+void		mob_hit(t_mob* mob, double x, double y, double knockback, int dmg)
+{
+	double vecx, vecy, veclen;
+
+	vecx = mob->x - x;
+	vecy = mob->y - y;
+	veclen = vec2d_len(vecx, vecy);
+	mob->x += (vecx / veclen * knockback);
+	mob->y += (vecy / veclen * knockback);
+	mob->life -= dmg;
+}
+
 static bool		mob_updateone(t_mob *mob, t_mob* othermobs, t_player* player, int time)
 {
 	double		vectorsize;

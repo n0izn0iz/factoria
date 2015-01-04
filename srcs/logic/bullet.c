@@ -5,9 +5,7 @@
 #include "logic/bullet.h"
 #include "misc/intersect.h"
 
-# define BULLET_VELOCITY 35
-
-static t_bullet*		bullet_createlist(int ox, int oy, int dx, int dy, int dmg)
+static t_bullet*		bullet_createlist(int ox, int oy, int dx, int dy, int dmg, int knockback, int velocity)
 {
 	t_bullet *newlist;
 
@@ -17,23 +15,25 @@ static t_bullet*		bullet_createlist(int ox, int oy, int dx, int dy, int dmg)
 	newlist->dx = dx;
 	newlist->dy = dy;
 	newlist->dmg = dmg;
+	newlist->velocity = velocity;
+	newlist->knockback = knockback;
 	newlist->next = NULL;
 	return (newlist);
 }
 
-void					bullet_add(t_bullet** list, int ox, int oy, int dx, int dy, int dmg)
+void					bullet_add(t_bullet** list, int ox, int oy, int dx, int dy, int dmg, int knockback, int velocity)
 {
 	t_bullet	*first;
 
 	if ((*list) == NULL)
 	{
-		*list = bullet_createlist(ox, oy, dx, dy, dmg);
+		*list = bullet_createlist(ox, oy, dx, dy, dmg, knockback, velocity);
 		return ;
 	}
 	first = *list;
 	while ((*list)->next)
 		*list = (*list)->next;
-	(*list)->next = bullet_createlist(ox, oy, dx, dy, dmg);
+	(*list)->next = bullet_createlist(ox, oy, dx, dy, dmg, knockback, velocity);
 	*list = first;
 }
 
@@ -63,15 +63,15 @@ static bool		bullet_updateone(t_bullet *bullet, t_player* player, t_mob *mobs)
 	vectorsize = sqrt(((bullet->dx - bullet->ox) * (bullet->dx - bullet->ox)) + ((bullet->dy - bullet->oy) * (bullet->dy - bullet->oy)));
 	unitx = (float)(bullet->dx - bullet->ox) / vectorsize;
 	unity = (float)(bullet->dy - bullet->oy) / vectorsize;
-	movx = unitx * BULLET_VELOCITY;
-	movy = unity * BULLET_VELOCITY;
+	movx = unitx * bullet->velocity;
+	movy = unity * bullet->velocity;
 	trailx = bullet->ox + movx;
 	traily = bullet->oy + movy;
 	while (mobs)
 	{
 		if (linecirleintersect(bullet->ox, bullet->oy, trailx, traily, mobs->x, mobs->y, MOB_SIZE))
 		{
-			mobs->life -= bullet->dmg;
+			mob_hit(mobs, bullet->ox, bullet->oy, bullet->knockback, bullet->dmg);
 			return (true);
 		}
 		mobs = mobs->next;
@@ -81,7 +81,7 @@ static bool		bullet_updateone(t_bullet *bullet, t_player* player, t_mob *mobs)
 		player->life -= bullet->dmg;
 		return (true);
 	}
-	if (vectorsize < BULLET_VELOCITY)
+	if (vectorsize < bullet->velocity)
 		return (true);
 	bullet->ox = trailx;
 	bullet->oy = traily;

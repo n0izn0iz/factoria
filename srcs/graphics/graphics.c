@@ -80,6 +80,10 @@ static void			gfx_loadsprites(t_gfx *gfx)
 	sw = image->w;
 	sh = image->h;
 	gfx->batsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	image = sdlh_loadandconvert("socle1.png");
+	sw = image->w;
+	sh = image->h;
+	gfx->standsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw , sh);
 }
 
 static void		mixsprite(SDL_Surface *dest, t_sprite* sprite, int x, int y, double scale)
@@ -88,6 +92,8 @@ static void		mixsprite(SDL_Surface *dest, t_sprite* sprite, int x, int y, double
 
 	destrect.x = x - (sprite->ox / scale);
 	destrect.y = -y - (sprite->oy / scale);
+	if (destrect.x < -WIN_WIDTH / 2 || destrect.x > WIN_WIDTH * 1.5 || destrect.y < -WIN_HEIGHT / 2 || destrect.y > WIN_HEIGHT * 1.5)
+		return ;
 	destrect.w = sprite->rect.w / scale;
 	destrect.h = sprite->rect.h / scale;
 	if (scale > 1)
@@ -208,13 +214,14 @@ static void		gfx_drawmobs(t_sdlh* sdlh, t_anim* anim, t_mob* mobs, int scale, in
 	}
 }
 
-static void		gfx_drawturret(t_sdlh* sdlh, t_sprite* sprite, t_turret* turret, int scale, int winx, int winy)
+static void		gfx_drawturret(t_sdlh* sdlh, t_sprite* sprite, t_sprite* standsprite, t_turret* turret, int scale, int winx, int winy)
 {
 	SDL_Surface*	rotsurface;
 	t_sprite*		rotsprite;
 
 	rotsurface = rotozoomSurface(sprite->surface, turret->angle / M_PI * 180.0 + 180.0, 1.0, 1);
 	rotsprite = sprite_create(rotsurface, 0, 0, rotsurface->w / 2, rotsurface->h / 2, rotsurface->w, rotsurface->h);
+	mixsprite(sdlh->surface, standsprite, turret->x / scale - winx, turret->y / scale - winy, scale * 1.3);
 	mixsprite(sdlh->surface, rotsprite, turret->x / scale - winx, turret->y / scale - winy, scale);
 	SDL_FreeSurface(rotsurface);
 	free(rotsprite);
@@ -272,14 +279,7 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	else
 		sprite = gfx->playersprite->front;
 	gfx_drawsoil(gfx->soilsprite, gfx->sdlh->surface, winx, winy, scale);
-	mixsprite(gfx->sdlh->surface, gfx->shipsprite, -winx, -winy, scale);
 	x = 0;
-	while (x < (unsigned int)turretcount)
-	{
-		turret = turrets + x;
-		gfx_drawturret(gfx->sdlh, gfx->turretsprite, turret, scale, winx, winy);
-		x++;
-	}
 	while (panels)
 	{
 		mixsprite(gfx->sdlh->surface, gfx->solarpansprite, panels->x / scale - winx, panels->y / scale - winy, scale);
@@ -290,6 +290,13 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 		mixsprite(gfx->sdlh->surface, gfx->batsprite, bats->x / scale - winx, bats->y / scale - winy, scale);
 		bats = bats->next;
 	}
+	while (x < (unsigned int)turretcount)
+	{
+		turret = turrets + x;
+		gfx_drawturret(gfx->sdlh, gfx->turretsprite, gfx->standsprite, turret, scale, winx, winy);
+		x++;
+	}
+	mixsprite(gfx->sdlh->surface, gfx->shipsprite, -winx, -winy, scale);
 	gfx_drawmobs(gfx->sdlh, gfx->mobanim, mobs, scale, winx, winy, time);
 	mixsprite(gfx->sdlh->surface, sprite, player->x / scale - winx, player->y / scale - winy, scale);
 	bullet = bullets;

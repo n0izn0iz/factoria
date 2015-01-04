@@ -24,5 +24,6 @@ void		mob_add(t_mob** list, double x, double y, int time);
 void		mob_update(t_mob** list, t_player* player, int time);
 int			mob_getcount(t_mob* mobs);
 void		mob_destroy(t_mob* list);
+void		mob_hit(t_mob* mob, double x, double y, double knockback, int dmg);
 
 #endif

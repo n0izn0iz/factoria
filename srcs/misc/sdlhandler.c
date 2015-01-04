@@ -3,6 +3,7 @@
 
 #include "misc/strjoin.h"
 #include "misc/sdlhandler.h"
+#include "misc/xp_sleep.h"
 
 #define LAST(k, n) ((k) & ((1<<(n))-1))
 #define MID(k, m, n) LAST((k)>>(m),((n)-(m)))
@@ -93,10 +94,18 @@ void			sdlh_mixpixel(t_sdlh *sdlh, uint32_t x, uint32_t y, uint32_t pixel, float
 
 void			sdlh_update_window(const t_sdlh*	env)
 {
+	static int	lastframe = 0;
+	const int	framerate = 20;
+	int			now;
+
 	SDL_UpdateTexture(env->texture, NULL, env->pixels, WIN_WIDTH * sizeof(uint32_t));
 	SDL_RenderCopy(env->renderer, env->texture, NULL, NULL);
 	SDL_RenderPresent(env->renderer);
 	SDL_RenderClear(env->renderer);
+	now = SDL_GetTicks();
+	if (now < lastframe + framerate)
+		Sleep(lastframe + framerate - now);
+	lastframe = lastframe + framerate;
 }
 
 void			sdlh_cleanup(t_sdlh*	env)

@@ -6,9 +6,12 @@
 #include "misc/intersect.h"
 #include "logic/energy.h"
 
-#define TURRET_RANGE		250
-#define SHOOT_FREQ			5
-#define TURRET_ANGMOMENT	0.05
+#define TURRET_RANGE		300
+#define TURRET_SHOOT_FREQ	40
+#define TURRET_ANGMOMENT	0.1
+#define TURRET_DMG			15
+#define TURRET_KNOCKBACK	10
+#define TURRET_VELOCITY		70
 
 void			turret_add(t_turret** array, int x, int y, int *size, int time, t_nrgnetwork *nrgnet)
 {
@@ -103,13 +106,13 @@ void			turret_inrange(t_turret** array, t_bullet **bullet, int x, int y, int tim
 	{
 		tmp = (*array) + i;
 		lenght = sqrt(((x - tmp->x) * (x - tmp->x)) + ((y - tmp->y) * (y - tmp->y)));
-		if (lenght < TURRET_RANGE)
+		if (lenght < TURRET_RANGE && time > tmp->lastshot + TURRET_SHOOT_FREQ)
 		{
 			updateangle(tmp, x, y);
-			if (time > tmp->lastshot + SHOOT_FREQ && tmp->csm->buffer == 0 && tmp->angle == tmp->targetangle)
+			if (tmp->csm->buffer == 0 && tmp->angle == tmp->targetangle)
 			{
 				tmp->csm->buffer -= TURRET_NRGCONS;
-				bullet_add(bullet, tmp->x, tmp->y, x, y, 8);
+				bullet_add(bullet, tmp->x, tmp->y, x, y, TURRET_DMG, TURRET_KNOCKBACK, TURRET_VELOCITY);
 				tmp->lastshot = time;
 			}
 		}

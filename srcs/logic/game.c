@@ -122,7 +122,6 @@ void		game_loop(t_game *game)
 	mob_update(&(game->mobs), game->player, game->tickcount);
 	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events->drawgrid, game->nrgnet->capacity);
 	game->tickcount += 1;
-	Sleep(5);
 }
 
 void		game_destroy(t_game *game)
