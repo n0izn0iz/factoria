@@ -10,6 +10,7 @@
 #include "graphics/drawgrid.h"
 #include "logic/energybuildings.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 #define LIFEBAR_WIDTH 5
 
@@ -48,39 +49,39 @@ static void			gfx_loadsprites(t_gfx *gfx)
 	int sh;
 
 	gfx->playersprite = &playersprite;
-	image = sdlh_loadandconvert("soldier.png");
+	image = sdlh_loadandconvert("soldier.bmp");
 	sw = image->w / 9;
 	sh = 30;
 	gfx->playersprite->right = sprite_create(image, 0, sh * 2, sw / 2, sh / 2, sw, sh);
 	gfx->playersprite->left = sprite_create(image, 0, sh * 3, sw / 2, sh / 2, sw, sh);
 	gfx->playersprite->back = sprite_create(image, 0,  sh, sw / 2, sh / 2, sw, sh);
 	gfx->playersprite->front = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
-	image = sdlh_loadandconvert("alien.png");
+	image = sdlh_loadandconvert("alien.bmp");
 	sw = 48;
 	sh = 48;
 	gfx->mobanim = create_mob_anim(image);
 	gfx->mobanim->surface = image;
-	image = sdlh_loadandconvert("turret.png");
+	image = sdlh_loadandconvert("turret.bmp");
 	sw = 38;
 	sh = 38;
 	gfx->turretsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
-	image = sdlh_loadandconvert("soil3.png");
+	image = sdlh_loadandconvert("soil3.bmp");
 	sw = image->w;
 	sh = image->h;
 	gfx->soilsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
-	image = sdlh_loadandconvert("ship.png");
+	image = sdlh_loadandconvert("ship.bmp");
 	sw = image->w;
 	sh = image->h;
 	gfx->shipsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
-	image = sdlh_loadandconvert("solarpan.png");
+	image = sdlh_loadandconvert("solarpan.bmp");
 	sw = image->w;
 	sh = image->h;
 	gfx->solarpansprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
-	image = sdlh_loadandconvert("generator.png");
+	image = sdlh_loadandconvert("generator.bmp");
 	sw = image->w;
 	sh = image->h;
 	gfx->batsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
-	image = sdlh_loadandconvert("socle1.png");
+	image = sdlh_loadandconvert("socle1.bmp");
 	sw = image->w;
 	sh = image->h;
 	gfx->standsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw , sh);

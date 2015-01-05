@@ -1,6 +1,7 @@
 #include <string.h>
 #include "logic/game.h"
 #include "misc/save.h"
+#include <stdio.h>
 
 int		main(int argc, char **argv)
 {
