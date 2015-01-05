@@ -6,17 +6,18 @@ LIBOBJS =$(patsubst objs/main.o,,$(OBJS))
 HDRS	=includes
 C_FLAGS	=-Wall -Wextra -Werror -g -fpic -I$(HDRS)
 LD_FLAGS=-lm -lSDL2 -lSDL2_image -lSDL2_gfx -lSDL2_ttf -O3
+CC=gcc
 
 all: $(NAME)
 
 $(NAME): objs/main.o $(LIBNAME)
-	gcc -o $@ $(LD_FLAGS) $^
+	$(CC) -o $@ $(LD_FLAGS) $^
 
 $(LIBNAME): $(LIBOBJS)
-	gcc -shared -o $@ $^
+	$(CC) -shared -o $@ $^
 
 objs/%.o: srcs/%.c
-	gcc -c -o $@ $(C_FLAGS) $^
+	$(CC) -c -o $@ $(C_FLAGS) $^
 
 clean:
 	rm -f $(OBJS)
