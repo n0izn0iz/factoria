@@ -19,15 +19,16 @@ SRCS=	srcs/main.c srcs/logic/game.c srcs/logic/bullet.c srcs/logic/energy.c \
 		srcs/misc/save.c srcs/misc/sdlhandler.c srcs/misc/strjoin.c
 OBJS=$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 LIBOBJS=$(patsubst objs/main.o,,$(OBJS))
-HDRS=includes
-C_FLAGS=-Wall -Wextra -Werror -g -fpic $(shell sdl2-config --cflags) -I$(HDRS)
 ifeq ($(MACHINENAME),x86_64-w64-mingw32)
+HDRS=-Iincludes -I/usr/local/include
 LD_FLAGS=-lm $(patsubst -mwindows,,$(shell sdl2-config --libs)) -lSDL2_image -lSDL2_ttf
 else
 ifeq ($(MACHINENAME),x86_64-unknown-linux-gnu)
+HDRS=-Iincludes
 LD_FLAGS=-lm $(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf
 endif
 endif
+C_FLAGS=-Wall -Wextra -Werror -g -fpic $(shell sdl2-config --cflags) $(HDRS)
 
 all: $(EXENAME)
 
@@ -35,7 +36,7 @@ $(EXENAME): objs/main.o $(LIBNAME)
 	$(CC) -o $@ $(LD_FLAGS) $^
 
 $(LIBNAME): $(LIBOBJS)
-	$(CC) -shared -o $@ $^
+	$(CC) -shared -o $@ $^ $(LD_FLAGS)
 
 objs/%.o: srcs/%.c
 	$(CC) -c -o $@ $(C_FLAGS) $^

@@ -40,7 +40,10 @@ t_game*		game_create(void)
 		game->bats = NULL;
 		srand(time(NULL));
 		game->player->score = 0;
-		tmp = SDL_LoadObject("factoria.so");
+		if (strcmp("Windows", SDL_GetPlatform()) == 0)
+			tmp = SDL_LoadObject("factoria.dll");
+		else
+			tmp = SDL_LoadObject("factoria.so");
 		if (tmp == NULL)
 			printf("ERROR: %s\n", SDL_GetError());
 		game->func = SDL_LoadFunction(tmp , "factoriadynamictest");
