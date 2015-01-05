@@ -76,7 +76,7 @@ SDL_Surface*	sdlh_loadandconvert(char *name)
 	image = IMG_Load(tmp);
 	free(tmp);
 	if (!image)
-		fprintf(stderr, "%s\n", IMG_GetError());
+		printf("ERROR: %s\n", IMG_GetError());
 	conversion = SDL_ConvertSurfaceFormat(image, SDL_PIXELFORMAT_ARGB8888, 0);
 	SDL_FreeSurface(image);
 	return (conversion);

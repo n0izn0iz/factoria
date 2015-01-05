@@ -1,6 +1,12 @@
 NAME	=factoria
-LIBNAME =$(NAME).so
-SRCS	!= find srcs -name "*.c"
+LIBNAME =$(NAME).dll
+SRCS	=	srcs/main.c srcs/logic/game.c srcs/logic/bullet.c srcs/logic/energy.c \
+			srcs/logic/energybuildings.c srcs/logic/logic.c srcs/logic/mob.c \
+			srcs/logic/player.c srcs/logic/turret.c srcs/graphics/animation.c \
+			srcs/graphics/bresenham.c srcs/graphics/drawgrid.c srcs/graphics/fonts.c \
+			srcs/graphics/graphics.c srcs/graphics/printformat.c srcs/graphics/SDL2_rotozoom.c \
+			srcs/graphics/sprite.c srcs/misc/dynamictest.c srcs/misc/events.c srcs/misc/intersect.c \
+			srcs/misc/save.c srcs/misc/sdlhandler.c srcs/misc/strjoin.c
 OBJS	=$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 LIBOBJS =$(patsubst objs/main.o,,$(OBJS))
 HDRS	=includes

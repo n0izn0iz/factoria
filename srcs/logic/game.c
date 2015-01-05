@@ -4,6 +4,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <stdio.h>
+#include <math.h>
 
 #define RAD(x) ((x) * M_PI / 180.f)
 #define SPAWN_RADIUS 2000
@@ -38,7 +40,7 @@ t_game*		game_create(void)
 		game->bats = NULL;
 		srand(time(NULL));
 		game->player->score = 0;
-		tmp = SDL_LoadObject("./factoria.so");
+		tmp = SDL_LoadObject("factoria.dll");
 		if (tmp == NULL)
 			printf("ERROR: %s\n", SDL_GetError());
 		game->func = SDL_LoadFunction(tmp , "factoriadynamictest");
