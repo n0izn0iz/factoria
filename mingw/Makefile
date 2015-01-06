@@ -57,9 +57,9 @@ $(NAME): $(OBJS)
 	$(CC) -o $@ $^ $(LD_FLAGS)
 
 $(DLLS):
-	cp $(SDLLIB) ../
-	cp $(SDLIMG) ../
-	cp $(SDLTTF) ../
+	cp $(SDLLIB) ..
+	cp $(SDLIMG) ..
+	cp $(SDLTTF) ..
 	
 ../objs/%.o: ../srcs/%.c
 	$(CC) -c -o $@ $(C_FLAGS) $^
