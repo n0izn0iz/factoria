@@ -1,12 +1,12 @@
 #include <math.h>
 #include <stdbool.h>
 
-inline double		vec2d_len(double x, double y)
+double		vec2d_len(double x, double y)
 {
 	return (sqrt((x * x) + (y * y)));
 }
 
-inline double		vec2d_dot(double ax, double ay, double bx, double by)
+double		vec2d_dot(double ax, double ay, double bx, double by)
 {
 	return (ax * bx) + (ay * by);
 }

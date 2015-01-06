@@ -1,6 +1,6 @@
 #include "graphics/animation.h"
 
-inline unsigned int		anim_frameindex(t_anim* anim, int time, int frametime)
+unsigned int		anim_frameindex(t_anim* anim, int time, int frametime)
 {
 	return (time % (frametime * anim->framecount) / frametime);
 }

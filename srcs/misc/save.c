@@ -190,6 +190,7 @@ t_game*	save_load(const char *path, bool force, bool donew)
 		game->bullets = NULL;
 	if (force == false)
 	{
+		firstmob=NULL;
 		SDL_RWread(file, &j, sizeof(int), 1);
 		if (j > 0)
 		{
