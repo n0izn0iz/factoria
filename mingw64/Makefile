@@ -18,7 +18,7 @@ SDLTTFNAME=SDL2_ttf-2.0.12
 SDLGFXNAME=SDL2_gfx-1.0.1
 SDLIMGNAME=SDL2_image-2.0.0
 
-all: $(DLLS) $(NAME)
+all: sdllibs $(DLLS) $(NAME)
 
 sdllibs: $(SDLGFX) $(SDLIMG) $(SDLTTF)
 
