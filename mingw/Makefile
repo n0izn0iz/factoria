@@ -1,10 +1,10 @@
 CC=gcc
-NAME=../factoria-mingw64.exe
+NAME=../factoria-mingw.exe
 SRCS=../srcs/main.c $(wildcard ../srcs/*/*.c)
 OBJS=$(patsubst ../srcs/%.c,../objs/%.o,$(SRCS))
 SDLPREFIX=$(shell pwd)/sdlinstall
 SDLCONFIG=$(SDLPREFIX)/bin/sdl2-config
-LD_FLAGS=-lm -lSDL2_gfx $(shell $(SDLCONFIG) --libs) -lSDL2_image -lSDL2_ttf
+LD_FLAGS=-lm -lSDL2_gfx $(patsubst -mwindows,,$(shell $(SDLCONFIG) --libs)) -lSDL2_image -lSDL2_ttf
 C_FLAGS=-Wall -Wextra -Werror -g $(shell $(SDLCONFIG) --cflags) -I../include
 SDLLIB=$(SDLPREFIX)/bin/SDL2.dll
 SDLTTF=$(SDLPREFIX)/bin/SDL2_ttf.dll

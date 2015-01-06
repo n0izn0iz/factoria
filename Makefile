@@ -1,5 +1,5 @@
 ifeq ($(OS),Windows_NT)
-DIR=mingw64
+DIR=mingw
 else
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
