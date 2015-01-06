@@ -1,5 +1,5 @@
 #include "misc/save.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdlib.h>
 #include "logic/turret.h"
 

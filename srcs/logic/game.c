@@ -3,7 +3,7 @@
 #include "misc/xp_sleep.h"
 #include <time.h>
 #include <stdlib.h>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -14,7 +14,6 @@ t_game*		game_create(void)
 {
 	t_game*			game;
 	static t_gfx	gfx;
-	void*			tmp;
 
 	game = malloc(sizeof(t_game));
 	if (game != NULL)
@@ -40,15 +39,6 @@ t_game*		game_create(void)
 		game->bats = NULL;
 		srand(time(NULL));
 		game->player->score = 0;
-		if (strcmp("Windows", SDL_GetPlatform()) == 0)
-			tmp = SDL_LoadObject("factoria.dll");
-		else
-			tmp = SDL_LoadObject("factoria.so");
-		if (tmp == NULL)
-			printf("ERROR: %s\n", SDL_GetError());
-		game->func = SDL_LoadFunction(tmp , "factoriadynamictest");
-		if (game->func == NULL)
-			printf("ERROR: %s\n", SDL_GetError());
 	}
 	return (game);
 }
@@ -83,7 +73,6 @@ void		game_loop(t_game *game)
 	player_updatedirection(game->player, game->events->mov_x, game->events->mov_y);
 	playerx = game->player->x;
 	playery = game->player->y;
-	game->func();
 	game_spawnmobs(game);
 	if (game->events->solarpanelflag == true)
 	{

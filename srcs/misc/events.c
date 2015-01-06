@@ -1,5 +1,5 @@
 #include "misc/events.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 
 t_evnh*		events_create()
