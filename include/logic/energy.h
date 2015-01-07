@@ -2,6 +2,7 @@
 #define ENERGY_H
 
 #define NRG_BATMAXLVL 10000
+#define NRG_RANGE 200
 
 typedef struct		s_battery
 {
@@ -38,11 +39,20 @@ typedef struct		s_nrgnetwork
 	int						maxcap;
 }					t_nrgnetwork;
 
-void		nrg_addbattery(t_battery** bat, int x, int y);
-void		nrg_addgenerator(t_generator** gen, int x, int y);
-void		nrg_addconsumer(t_consumer** csm, int x, int y, int firstcons);
-void		nrg_addnetwork(t_nrgnetwork** net, t_battery* bat, t_generator* gen, t_consumer* csm);
-void		nrg_updatenetwork(t_nrgnetwork** net);
-void		nrg_printnetwork(t_nrgnetwork* net);
+typedef enum	e_nodetype
+{
+	NT_UNKNOWN = 0,
+	NT_BATTERY,
+	NT_GENERATOR,
+	NT_CONSUMER
+}				t_nodetype;
+
+void*			nrg_addnode(t_nrgnetwork** networks, int nodetype, double x, double y, double range);
+void			nrg_updatenetworks(t_nrgnetwork** net);
+void			nrg_printnetwork(t_nrgnetwork* net);
+t_battery*		nrg_addbattery(t_battery** bat, int x, int y);
+t_generator*	nrg_addgenerator(t_generator** gen, int x, int y);
+t_consumer*		nrg_addconsumer(t_consumer** csm, int x, int y, int firstcons);
+t_nrgnetwork*	nrg_addnetwork(t_nrgnetwork** net, t_battery* bat, t_generator* gen, t_consumer* csm);
 
 #endif

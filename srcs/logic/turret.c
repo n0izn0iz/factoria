@@ -13,12 +13,11 @@
 #define TURRET_KNOCKBACK	10
 #define TURRET_VELOCITY		70
 
-void			turret_add(t_turret** array, int x, int y, int *size, int time, t_nrgnetwork *nrgnet)
+void			turret_add(t_turret** array, int x, int y, int *size, int time, t_nrgnetwork **nrgnet)
 {
 	int		i;
 	int		j;
 	t_turret*		temparray;
-	t_consumer*		csm;
 
 	i = *size;
 	if (i % EXPAND_SIZE == 0)
@@ -44,11 +43,8 @@ void			turret_add(t_turret** array, int x, int y, int *size, int time, t_nrgnetw
 	else
 		temparray->y = y - (y % GRID_SIZE) - (GRID_SIZE / 2);
 	temparray->lastshot = time;
-	nrg_addconsumer(&nrgnet->consumers, x, y, TURRET_NRGCONS);
-	csm = nrgnet->consumers;
-	while (csm->next)
-		csm = csm->next;
-	temparray->csm = csm;
+	temparray->csm = nrg_addnode(nrgnet, NT_CONSUMER, x, y, NRG_RANGE);
+	temparray->csm->buffer = -TURRET_NRGCONS;
 	i++;
 	*size = i;
 }

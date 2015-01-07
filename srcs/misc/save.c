@@ -30,7 +30,7 @@ void	save_importturrets(SDL_RWops* file, t_turret** turrets, int* turretcount, t
 	{
 		SDL_RWread(file, &tmpturret, sizeof(t_turret), 1);
 		SDL_RWread(file, &tmpcsm, sizeof(t_consumer), 1);
-		turret_add(turrets, tmpturret.x, tmpturret.y, &i, 0, nrgnet);
+		turret_add(turrets, tmpturret.x, tmpturret.y, &i, 0, &nrgnet);
 		turret = *turrets + i - 1;
 		turret->angle = tmpturret.angle;
 		turret->targetangle = tmpturret.targetangle;
@@ -63,7 +63,7 @@ void	save_importpanels(SDL_RWops* file, t_solarpan** panels, t_nrgnetwork* nrgne
 	{
 		SDL_RWread(file, &tmppan, sizeof(t_solarpan), 1);
 		SDL_RWread(file, &tmpgen, sizeof(t_generator), 1);
-		solarpan_add(panels, tmppan.x, tmppan.y, nrgnet);
+		solarpan_add(panels, tmppan.x, tmppan.y, &nrgnet);
 		i++;
 	}
 }
@@ -94,7 +94,7 @@ void	save_importbats(SDL_RWops* file, t_batbuilding** batbuild, t_nrgnetwork* nr
 	{
 		SDL_RWread(file, &tmpbatbuild, sizeof(t_batbuilding), 1);
 		SDL_RWread(file, &tmpbat, sizeof(t_battery), 1);
-		batbuilding_add(batbuild, tmpbatbuild.x, tmpbatbuild.y, nrgnet);
+		batbuilding_add(batbuild, tmpbatbuild.x, tmpbatbuild.y, &nrgnet);
 		if (bat == NULL)
 			bat = nrgnet->batteries;
 		else

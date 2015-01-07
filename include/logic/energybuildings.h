@@ -19,9 +19,9 @@ typedef struct		s_batbuilding
 	struct s_batbuilding*	next;
 }					t_batbuilding;
 
-void		solarpan_add(t_solarpan** panels, int x, int y, t_nrgnetwork* net);
+void		solarpan_add(t_solarpan** panels, int x, int y, t_nrgnetwork** net);
 int			solarpan_getcount(t_solarpan* panels);
-void		batbuilding_add(t_batbuilding** buildings, int x, int y, t_nrgnetwork* net);
+void		batbuilding_add(t_batbuilding** buildings, int x, int y, t_nrgnetwork** net);
 int			batbuilding_getcount(t_batbuilding* bats);
 
 #endif

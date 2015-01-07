@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 
 #define RAD(x) ((x) * M_PI / 180.f)
 #define SPAWN_RADIUS 2000
@@ -34,7 +35,6 @@ t_game*		game_create(void)
 		game->spawnfreq = 100;
 		game->shouldsave = true;
 		game->nrgnet = NULL;
-		nrg_addnetwork(&game->nrgnet, NULL, NULL, NULL);
 		game->panels = NULL;
 		game->bats = NULL;
 		srand(time(NULL));
@@ -66,6 +66,8 @@ void		game_loop(t_game *game)
 	int			playerx;
 	int			playery;
 	t_mob*		mob;
+	int i;
+	t_nrgnetwork*	tmpnet;
 
 	events_update(game->events);
 	if (game->events->quitflag == true)
@@ -76,15 +78,15 @@ void		game_loop(t_game *game)
 	game_spawnmobs(game);
 	if (game->events->solarpanelflag == true)
 	{
-		solarpan_add(&game->panels, playerx, playery, game->nrgnet);
+		solarpan_add(&game->panels, playerx, playery, &game->nrgnet);
 		game->events->solarpanelflag = false;
 	}
 	if (game->events->batteryflag == true)
 	{
-		batbuilding_add(&game->bats, playerx, playery, game->nrgnet);
+		batbuilding_add(&game->bats, playerx, playery, &game->nrgnet);
 		game->events->batteryflag = false;
 	}
-	nrg_updatenetwork(&game->nrgnet);
+	nrg_updatenetworks(&game->nrgnet);
 	if (game->events->spawnmobflag == true)
 	{
 		mob_add(&(game->mobs), playerx, playery, game->tickcount);
@@ -103,7 +105,7 @@ void		game_loop(t_game *game)
 	}
 	if (game->events->turretflag == true)
 	{
-		turret_add(&(game->turrets), playerx, playery, &(game->turretcount), game->tickcount, game->nrgnet);
+		turret_add(&(game->turrets), playerx, playery, &(game->turretcount), game->tickcount, &game->nrgnet);
 		game->events->turretflag = false;
 	}
 	mob = game->mobs;
@@ -114,8 +116,16 @@ void		game_loop(t_game *game)
 	}
 	bullet_update(&(game->bullets), game->player, game->mobs);
 	mob_update(&(game->mobs), game->player, game->tickcount);
-	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events->drawgrid, game->nrgnet->capacity);
+	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events->drawgrid, game->nrgnet ? game->nrgnet->capacity : 0);
 	game->tickcount += 1;
+	i = 0;
+	tmpnet = game->nrgnet;
+	while (tmpnet)
+	{
+		i++;
+		tmpnet = tmpnet->next;
+	}
+	printf("%i networks\n", i);
 }
 
 void		game_destroy(t_game *game)

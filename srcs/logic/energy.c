@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-void		nrg_addbattery(t_battery** bat, int x, int y)
+t_battery*		nrg_addbattery(t_battery** bat, int x, int y)
 {
 	t_battery*		curr;
 	t_battery*		newbat;
@@ -18,14 +18,15 @@ void		nrg_addbattery(t_battery** bat, int x, int y)
 	if (curr == NULL)
 	{
 		*bat = newbat;
-		return ;
+		return (newbat);
 	}
 	while (curr->next)
 		curr = curr->next;
 	curr->next = newbat;
+	return (newbat);
 }
 
-void		nrg_addgenerator(t_generator** gen, int x, int y)
+t_generator*	nrg_addgenerator(t_generator** gen, int x, int y)
 {
 	t_generator*		curr;
 	t_generator*		newgen;
@@ -38,14 +39,15 @@ void		nrg_addgenerator(t_generator** gen, int x, int y)
 	if (curr == NULL)
 	{
 		*gen = newgen;
-		return ;
+		return (newgen);
 	}
 	while (curr->next)
 		curr = curr->next;
 	curr->next = newgen;
+	return (newgen);
 }
 
-void		nrg_addconsumer(t_consumer** csm, int x, int y, int firstcons)
+t_consumer*		nrg_addconsumer(t_consumer** csm, int x, int y, int firstcons)
 {
 	t_consumer*		curr;
 	t_consumer*		newcsm;
@@ -59,11 +61,12 @@ void		nrg_addconsumer(t_consumer** csm, int x, int y, int firstcons)
 	if (curr == NULL)
 	{
 		*csm = newcsm;
-		return ;
+		return (newcsm);
 	}
 	while (curr->next)
 		curr = curr->next;
 	curr->next = newcsm;
+	return (newcsm);
 }
 
 void			nrg_printnetwork(t_nrgnetwork* net)
@@ -99,7 +102,7 @@ void			nrg_printnetwork(t_nrgnetwork* net)
 	printf ("%i consumers for a total capacity of %i and a balance of %i\n", i, net->capacity, net->balance);
 }
 
-void			nrg_addnetwork(t_nrgnetwork** net, t_battery* bat, t_generator* gen, t_consumer* csm)
+t_nrgnetwork*	nrg_addnetwork(t_nrgnetwork** net, t_battery* bat, t_generator* gen, t_consumer* csm)
 {
 	t_nrgnetwork*		curr;
 	t_nrgnetwork*		newnet;
@@ -113,11 +116,12 @@ void			nrg_addnetwork(t_nrgnetwork** net, t_battery* bat, t_generator* gen, t_co
 	if (curr == NULL)
 	{
 		*net = newnet;
-		return ;
+		return (newnet);
 	}
 	while (curr->next)
 		curr = curr->next;
 	curr->next = newnet;
+	return (newnet);
 }
 
 static int		nrg_getgeneration(t_generator* gen)
@@ -144,6 +148,35 @@ static int		nrg_getconsumption(t_consumer* csm)
 		csm = csm->next;
 	}
 	return (result);
+}
+
+static int		nrg_getnumberofnodes(t_nrgnetwork* net)
+{
+	t_battery* bat;
+	t_generator* gen;
+	t_consumer* csm;
+	int i;
+
+	i = 0;
+	bat = net->batteries;
+	while (bat)
+	{
+		i++;
+		bat = bat->next;
+	}
+	gen = net->generators;
+	while (gen)
+	{
+		i++;
+		gen = gen->next;
+	}
+	csm = net->consumers;
+	while (csm)
+	{
+		i++;
+		csm = csm->next;
+	}
+	return (i);
 }
 
 static int		nrg_getbalance(t_consumer* csm, t_generator* gen)
@@ -223,10 +256,12 @@ static bool		nrg_updateonenetwork(t_nrgnetwork* net)
 	net->balance = nrg_getbalance(net->consumers, net->generators);
 	nrg_balancenetwork(net);
 	net->capacity = nrg_getcapacity(net->batteries);
+	if (nrg_getnumberofnodes(net) == 0)
+		return (true);
 	return (false);
 }
 
-void		nrg_updatenetwork(t_nrgnetwork** list)
+void		nrg_updatenetworks(t_nrgnetwork** list)
 {
 	t_nrgnetwork*	it;
 	t_nrgnetwork*	prev;
