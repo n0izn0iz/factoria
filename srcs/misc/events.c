@@ -19,6 +19,7 @@ t_evnh*		events_create()
 		env->mov_x = 0;
 		env->mov_y = 0;
 		env->scale = 1;
+		env->selected = 0;
 	}
 	return (env);
 }
@@ -32,22 +33,49 @@ void		events_update(t_evnh* env)
 	{
 		if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE))
 			env->quitflag = true;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_t)
-			env->turretflag = true;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_h)
-			env->healflag = true;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_m)
-			env->spawnmobflag = true;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_g)
-			env->drawgrid = !env->drawgrid;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_KP_MINUS)
-			env->scale += env->scale < 4 ? 1 : 0;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_KP_PLUS)
-			env->scale -= env->scale > 1 ? 1 : 0;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_p)
-			env->solarpanelflag = true;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_b)
-			env->batteryflag = true;
+		if (e.type == SDL_KEYDOWN)
+		{
+			switch (e.key.keysym.sym) {
+			case SDLK_t:
+				env->turretflag = true;
+				break ;
+			case SDLK_h:
+				env->healflag = true;
+				break ;
+			case SDLK_m:
+				env->spawnmobflag = true;
+				break ;
+			case SDLK_g:
+				env->drawgrid = !env->drawgrid;
+				break ;
+			case SDLK_KP_MINUS:
+				env->scale += env->scale < 4 ? 1 : 0;
+				break ;
+			case SDLK_KP_PLUS:
+				env->scale -= env->scale > 1 ? 1 : 0;
+				break ;
+			case SDLK_p:
+				env->solarpanelflag = true;
+				break ;
+			case SDLK_b:
+				env->batteryflag = true;
+				break ;
+			case SDLK_KP_0:
+				env->selected = 0;
+				break ;
+			case SDLK_KP_1:
+				env->selected = 1;
+				break ;
+			case SDLK_KP_2:
+				env->selected = 2;
+				break ;
+			case SDLK_KP_3:
+				env->selected = 3;
+				break ;
+			default:
+				break ;
+			}
+		}
 	}
 	kstate = SDL_GetKeyboardState(NULL);
 	env->mov_x = 0;

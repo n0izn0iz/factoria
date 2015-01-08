@@ -43,7 +43,7 @@ void			turret_add(t_turret** array, int x, int y, int *size, int time, t_nrgnetw
 	else
 		temparray->y = y - (y % GRID_SIZE) - (GRID_SIZE / 2);
 	temparray->lastshot = time;
-	temparray->csm = nrg_addnode(nrgnet, NT_CONSUMER, x, y, NRG_RANGE);
+	temparray->csm = nrg_addnode(nrgnet, NT_CONSUMER, temparray->x, temparray->y, NRG_RANGE);
 	temparray->csm->buffer = -TURRET_NRGCONS;
 	i++;
 	*size = i;

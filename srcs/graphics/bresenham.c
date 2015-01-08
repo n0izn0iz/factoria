@@ -65,9 +65,9 @@ void			plot_line(t_point apt, t_point bpt, t_sdlh *sdlh)
 	{
 		gain = (float)(it.x - apt.x) / (bpt.x - apt.x);
 		if (misc.z)
-			sdlh_putpixel(sdlh, it.y, -it.x, colmix(apt.color, bpt.color, gain));
+			sdlh_putpixel(sdlh->surface, it.y, -it.x, colmix(apt.color, bpt.color, gain));
 		else
-			sdlh_putpixel(sdlh, it.x, -it.y, colmix(apt.color, bpt.color, gain));
+			sdlh_putpixel(sdlh->surface, it.x, -it.y, colmix(apt.color, bpt.color, gain));
 		misc.x -= dp.y;
 		if (misc.x < 0)
 		{

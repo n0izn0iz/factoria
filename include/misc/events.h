@@ -12,6 +12,7 @@ typedef struct		s_evnh
 	bool			drawgrid;
 	bool			batteryflag;
 	bool			solarpanelflag;
+	unsigned int	selected;
 	int				mov_x;
 	int				mov_y;
 	int				scale;

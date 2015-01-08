@@ -26,7 +26,7 @@ typedef struct	s_sdlh
 
 void			sdlh_init(t_sdlh*	env);
 SDL_Surface*	sdlh_loadandconvert(char *path);
-void			sdlh_putpixel(t_sdlh *sdlh, uint32_t x, uint32_t y, uint32_t pixel);
+void			sdlh_putpixel(SDL_Surface* dest, uint32_t x, uint32_t y, uint32_t pixel);
 void			sdlh_mixpixel(t_sdlh *sdlh, uint32_t x, uint32_t y, uint32_t pixel, float gain);
 void			sdlh_update_window(const t_sdlh*	env);
 void			sdlh_cleanup(t_sdlh*	env);

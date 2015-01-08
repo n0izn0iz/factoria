@@ -59,11 +59,10 @@ void			sdlh_init(t_sdlh*	env)
 		printf("ERROR: %s\n", SDL_GetError());
 }
 
-void			sdlh_putpixel(t_sdlh *sdlh, uint32_t x, uint32_t y, uint32_t pixel)
+void			sdlh_putpixel(SDL_Surface* dest, uint32_t x, uint32_t y, uint32_t pixel)
 {
-	if (y >= WIN_HEIGHT || x >= WIN_WIDTH)
-		return ;
-	sdlh->pixels[y * WIN_WIDTH + x] = pixel;
+	if (y < (uint32_t)dest->h && x < (uint32_t)dest->w)
+		((uint32_t*)dest->pixels)[y * WIN_WIDTH + x] = pixel;
 }
 
 SDL_Surface*	sdlh_loadandconvert(char *name)

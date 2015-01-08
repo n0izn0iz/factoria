@@ -2,7 +2,7 @@
 #define ENERGY_H
 
 #define NRG_BATMAXLVL 10000
-#define NRG_RANGE 200
+#define NRG_RANGE 225
 
 typedef struct		s_battery
 {

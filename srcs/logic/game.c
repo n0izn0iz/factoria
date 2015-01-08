@@ -116,7 +116,7 @@ void		game_loop(t_game *game)
 	}
 	bullet_update(&(game->bullets), game->player, game->mobs);
 	mob_update(&(game->mobs), game->player, game->tickcount);
-	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events->drawgrid, game->nrgnet ? game->nrgnet->capacity : 0);
+	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events, game->nrgnet ? game->nrgnet->capacity : 0, game->nrgnet);
 	game->tickcount += 1;
 	i = 0;
 	tmpnet = game->nrgnet;

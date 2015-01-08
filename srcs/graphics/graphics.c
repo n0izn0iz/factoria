@@ -11,6 +11,7 @@
 #include "logic/energybuildings.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "misc/intersect.h"
 
 #define LIFEBAR_WIDTH 5
 
@@ -47,7 +48,10 @@ static void			gfx_loadsprites(t_gfx *gfx)
 	SDL_Surface	*image;
 	int sw;
 	int sh;
+	t_guibox* box;
 
+	gfx->gui = gui_create();
+	box = gui_addbox(gfx->gui);
 	gfx->playersprite = &playersprite;
 	image = sdlh_loadandconvert("soldier.bmp");
 	sw = image->w / 9;
@@ -56,6 +60,7 @@ static void			gfx_loadsprites(t_gfx *gfx)
 	gfx->playersprite->left = sprite_create(image, 0, sh * 3, sw / 2, sh / 2, sw, sh);
 	gfx->playersprite->back = sprite_create(image, 0,  sh, sw / 2, sh / 2, sw, sh);
 	gfx->playersprite->front = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	gui_addbutton(box, NULL, NULL, gfx->playersprite->front);
 	image = sdlh_loadandconvert("alien.bmp");
 	sw = 48;
 	sh = 48;
@@ -65,6 +70,7 @@ static void			gfx_loadsprites(t_gfx *gfx)
 	sw = 38;
 	sh = 38;
 	gfx->turretsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	gui_addbutton(box, NULL, NULL, gfx->turretsprite);
 	image = sdlh_loadandconvert("soil3.bmp");
 	sw = image->w;
 	sh = image->h;
@@ -77,17 +83,19 @@ static void			gfx_loadsprites(t_gfx *gfx)
 	sw = image->w;
 	sh = image->h;
 	gfx->solarpansprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	gui_addbutton(box, NULL, NULL, gfx->solarpansprite);
 	image = sdlh_loadandconvert("generator.bmp");
 	sw = image->w;
 	sh = image->h;
 	gfx->batsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw, sh);
+	gui_addbutton(box, NULL, NULL, gfx->batsprite);
 	image = sdlh_loadandconvert("socle1.bmp");
 	sw = image->w;
 	sh = image->h;
 	gfx->standsprite = sprite_create(image, 0, 0, sw / 2, sh / 2, sw , sh);
 }
 
-static void		mixsprite(SDL_Surface *dest, t_sprite* sprite, int x, int y, double scale)
+void		gfx_mixsprite(SDL_Surface *dest, t_sprite* sprite, int x, int y, double scale)
 {
 	SDL_Rect destrect;
 
@@ -115,11 +123,11 @@ static void			gfx_drawlife(t_sdlh* sdlh, int x, int y, int scale, int width, int
 		while (j < y + width)
 		{
 			if (width > 2 && (i == x || j == y || j == y + width - 1 || i == x + maxlife * scale / 2 - 1))
-				sdlh_putpixel(sdlh, i, -j, 0x000000);
+				sdlh_putpixel(sdlh->surface, i, -j, 0x000000);
 			else if (i - x < life * scale / 2)
-				sdlh_putpixel(sdlh, i, -j, 0x00FF00);
+				sdlh_putpixel(sdlh->surface, i, -j, 0x00FF00);
 			else
-				sdlh_putpixel(sdlh, i, -j, 0xFF0000);
+				sdlh_putpixel(sdlh->surface, i, -j, 0xFF0000);
 			j++;
 		}
 		i++;
@@ -137,11 +145,11 @@ static void			gfx_drawenergy(t_sdlh* sdlh, int nrglvl, int x, int y, int scale, 
 		while (j < y + nrglvl * scale / 100)
 		{
 			if (width > 2 && (i == x || j == y || i == x + width - 1 || j == y + nrglvl * scale / 100 - 1))
-				sdlh_putpixel(sdlh, i, -j, 0x000000);
+				sdlh_putpixel(sdlh->surface, i, -j, 0x000000);
 			else if (nrglvl >= 5000)
-				sdlh_putpixel(sdlh, i, -j, 0x5555FF);
+				sdlh_putpixel(sdlh->surface, i, -j, 0x5555FF);
 			else
-				sdlh_putpixel(sdlh, i, -j, 0xFF0000);
+				sdlh_putpixel(sdlh->surface, i, -j, 0xFF0000);
 			j++;
 		}
 		i++;
@@ -161,7 +169,7 @@ static void			gfx_drawsoil(t_sprite* soilsprite, SDL_Surface* dest, int winx, in
 		y = 0;
 		while (y <= numh)
 		{
-			mixsprite(dest, soilsprite, x * soilsprite->rect.w / scale - (winx % (soilsprite->rect.w / scale) + (soilsprite->ox / scale)), y * soilsprite->rect.h / scale - (WIN_HEIGHT + winy % (soilsprite->rect.h / scale) - (soilsprite->oy / scale)), scale);
+			gfx_mixsprite(dest, soilsprite, x * soilsprite->rect.w / scale - (winx % (soilsprite->rect.w / scale) + (soilsprite->ox / scale)), y * soilsprite->rect.h / scale - (WIN_HEIGHT + winy % (soilsprite->rect.h / scale) - (soilsprite->oy / scale)), scale);
 			y++;
 		}
 		x++;
@@ -186,7 +194,7 @@ static void			gfx_drawbullet(t_bullet	*bullet, t_sdlh *sdlh, int scale, int winx
 	dest.x += 1;
 	dest.y += 1;
 	plot_line(orig, dest, sdlh);
-	sdlh_putpixel(sdlh, dest.x, -dest.y, 0xFFFFFF);
+	sdlh_putpixel(sdlh->surface, dest.x, -dest.y, 0xFFFFFF);
 }
 
 static void		gfx_drawmobs(t_sdlh* sdlh, t_anim* anim, t_mob* mobs, int scale, int winx, int winy, int time)
@@ -204,7 +212,7 @@ static void		gfx_drawmobs(t_sdlh* sdlh, t_anim* anim, t_mob* mobs, int scale, in
 		rotsurface = rotozoomSurface(tmpsurface, mobs->angle / M_PI * 180.0, 1.0, 1);
 		SDL_FreeSurface(tmpsurface);
 		rotsprite = sprite_create(rotsurface, 0, 0, rotsurface->w / 2, rotsurface->h / 2, rotsurface->w, rotsurface->h);
-		mixsprite(sdlh->surface, rotsprite, mobs->x / scale - winx, mobs->y / scale - winy, scale);
+		gfx_mixsprite(sdlh->surface, rotsprite, mobs->x / scale - winx, mobs->y / scale - winy, scale);
 		SDL_FreeSurface(rotsprite->surface);
 		free(rotsprite);
 		if (mobs->life < MOB_MAXLIFE)
@@ -222,10 +230,59 @@ static void		gfx_drawturret(t_sdlh* sdlh, t_sprite* sprite, t_sprite* standsprit
 
 	rotsurface = rotozoomSurface(sprite->surface, turret->angle / M_PI * 180.0 + 180.0, 1.0, 1);
 	rotsprite = sprite_create(rotsurface, 0, 0, rotsurface->w / 2, rotsurface->h / 2, rotsurface->w, rotsurface->h);
-	mixsprite(sdlh->surface, standsprite, turret->x / scale - winx, turret->y / scale - winy, scale * 1.3);
-	mixsprite(sdlh->surface, rotsprite, turret->x / scale - winx, turret->y / scale - winy, scale);
+	gfx_mixsprite(sdlh->surface, standsprite, turret->x / scale - winx, turret->y / scale - winy, scale * 1.3);
+	gfx_mixsprite(sdlh->surface, rotsprite, turret->x / scale - winx, turret->y / scale - winy, scale);
 	SDL_FreeSurface(rotsurface);
 	free(rotsprite);
+}
+
+static void		gfx_drawdisk(t_sdlh* sdlh, double x, double y, double radius, uint32_t color)
+{
+	int ix;
+	int iy;
+
+	ix = 0;
+	while (ix < radius * 2)
+	{
+		iy = 0;
+		while (iy < radius * 2)
+		{
+			if (vec2d_len(ix - radius, iy - radius) < radius)
+				sdlh_mixpixel(sdlh, x + ix - radius, y + iy - radius, color, 0.5);
+			iy++;
+		}
+		ix++;
+	}
+}
+
+static void		gfx_drawrange(t_sdlh* sdlh, t_nrgnetwork* nets, uint32_t color, double size, double x, double y)
+{
+	t_battery*		bat;
+	t_generator*	gen;
+	t_consumer*		csm;
+
+	while (nets)
+	{
+		bat = nets->batteries;
+		while (bat)
+		{
+			gfx_drawdisk(sdlh, bat->x - x, -(bat->y - y), size, color);
+			bat = bat->next;
+		}
+		gen = nets->generators;
+		while (gen)
+		{
+			gfx_drawdisk(sdlh, gen->x - x, -(gen->y - y), size, color);
+			gen = gen->next;
+		}
+		csm = nets->consumers;
+		while (csm)
+		{
+			gfx_drawdisk(sdlh, csm->x - x, -(csm->y - y), size, color);
+			csm = csm->next;
+		}
+		nets = nets->next;
+	}
 }
 
 void			gfx_init(t_gfx *gfx)
@@ -240,7 +297,7 @@ void			gfx_init(t_gfx *gfx)
 	gfx->camy = 0;
 }
 
-void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, t_solarpan* panels, t_batbuilding* bats, int scale, int time, bool shoulddrawgrid, int energylvl)
+void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, t_solarpan* panels, t_batbuilding* bats, int scale, int time, t_evnh* events, int energylvl, t_nrgnetwork* net)
 {
 	unsigned int			x;
 	unsigned int			y;
@@ -264,7 +321,7 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 		y = 0;
 		while (y < WIN_HEIGHT)
 		{
-			sdlh_putpixel(gfx->sdlh, x, y, 0x0);
+			sdlh_putpixel(gfx->sdlh->surface, x, y, 0x0);
 			y++;
 		}
 		x++;
@@ -280,15 +337,17 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	else
 		sprite = gfx->playersprite->front;
 	gfx_drawsoil(gfx->soilsprite, gfx->sdlh->surface, winx, winy, scale);
+	if (events->drawgrid)
+		gfx_drawrange(gfx->sdlh, net, 0x00FF00, NRG_RANGE / 2, winx, winy);
 	x = 0;
 	while (panels)
 	{
-		mixsprite(gfx->sdlh->surface, gfx->solarpansprite, panels->x / scale - winx, panels->y / scale - winy, scale);
+		gfx_mixsprite(gfx->sdlh->surface, gfx->solarpansprite, panels->x / scale - winx, panels->y / scale - winy, scale);
 		panels = panels->next;
 	}
 	while (bats)
 	{
-		mixsprite(gfx->sdlh->surface, gfx->batsprite, bats->x / scale - winx, bats->y / scale - winy, scale);
+		gfx_mixsprite(gfx->sdlh->surface, gfx->batsprite, bats->x / scale - winx, bats->y / scale - winy, scale);
 		bats = bats->next;
 	}
 	while (x < (unsigned int)turretcount)
@@ -297,16 +356,16 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 		gfx_drawturret(gfx->sdlh, gfx->turretsprite, gfx->standsprite, turret, scale, winx, winy);
 		x++;
 	}
-	mixsprite(gfx->sdlh->surface, gfx->shipsprite, -winx, -winy, scale);
+	gfx_mixsprite(gfx->sdlh->surface, gfx->shipsprite, -winx, -winy, scale);
 	gfx_drawmobs(gfx->sdlh, gfx->mobanim, mobs, scale, winx, winy, time);
-	mixsprite(gfx->sdlh->surface, sprite, player->x / scale - winx, player->y / scale - winy, scale);
+	gfx_mixsprite(gfx->sdlh->surface, sprite, player->x / scale - winx, player->y / scale - winy, scale);
 	bullet = bullets;
 	while (bullet)
 	{
 		gfx_drawbullet(bullet, gfx->sdlh, scale, winx, winy);
 		bullet = bullet->next;
 	}
-	if (shoulddrawgrid)
+	if (events->drawgrid)
 		drawgrid(gfx->sdlh, player->x % GRID_SIZE, player->y % GRID_SIZE);
 	gfx_drawlife(gfx->sdlh, 0, -WIN_HEIGHT + 1, 2, LIFEBAR_WIDTH, player->life, PLAYER_MAXLIFE);
 	gfx_drawenergy(gfx->sdlh, energylvl, WIN_WIDTH - 10, -WIN_HEIGHT + 1, 1, 10);
@@ -316,6 +375,7 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	testtext = fonts_texttosurface(str, "fonts/8bit.ttf", 0x000, gfx->sdlh->surface->format);
 	SDL_BlitSurface(testtext, NULL, gfx->sdlh->surface, NULL);
 	SDL_FreeSurface(testtext);
+	gfx_drawgui(gfx->sdlh->surface, gfx->gui, events);
 	sdlh_update_window(gfx->sdlh);
 }
 
