@@ -22,20 +22,18 @@ t_array*				array_create(unsigned int cap)
 	return (array);
 }
 
-void					array_destroy(t_array** array)
+void					array_destroy(t_array* array)
 {
-	assert(array);
-	if (*array)
+	if (array != NULL)
 	{
-		free((*array)->data);
-		free(*array);
-		*array = NULL;
+		free(array->data);
+		free(array);
 	}
 }
 
 void					array_append(t_array* array, void* value)
 {
-	assert(array);
+	assert(array != NULL);
 	if (array->size >= array->cap)
 	{
 		array->cap *= 2;
@@ -44,6 +42,21 @@ void					array_append(t_array* array, void* value)
 	}
 	array->data[array->size] = value;
 	array->size++;
+}
+
+void		array_merge(t_array* dest, t_array* src)
+{
+	unsigned int	i;
+
+	assert(src != NULL);
+	assert(dest != NULL);
+	i = 0;
+	while (i < src->size)
+	{
+		array_append(dest, src->data[i]);
+		i++;
+	}
+	array_destroy(src);
 }
 
 void*					array_get(t_array* array, unsigned int index)
@@ -62,8 +75,20 @@ void					array_swap(t_array* array, unsigned int i1, unsigned int i2)
 {
 	void*	tmptr;
 
-	assert(i1 < array->size && i2 < array->size);
+	assert(i1 < array->size);
+	assert(i2 < array->size);
 	tmptr = array->data[i1];
 	array->data[i1] = array->data[i2];
 	array->data[i2] = tmptr;
+}
+
+void*					array_remove(t_array* array, unsigned int index)
+{
+	void* tmp;
+
+	assert(array->size > 0);
+	tmp = array_get(array, index);
+	array->size -= 1;
+	array_set(array, index, array_get(array, array->size));
+	return (tmp);
 }

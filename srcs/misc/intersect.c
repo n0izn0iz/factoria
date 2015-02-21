@@ -1,10 +1,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-double		vec2d_len(double x, double y)
-{
-	return (sqrt((x * x) + (y * y)));
-}
+#include "misc/vecmath.h"
 
 double		vec2d_dot(double ax, double ay, double bx, double by)
 {

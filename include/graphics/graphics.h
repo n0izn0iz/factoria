@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include "graphics/animation.h"
 #include "misc/sdlhandler.h"
-#include "misc/events.h"
 #include "graphics/playerrend.h"
 #include "graphics/sprite.h"
 #include "graphics/fonts.h"
@@ -14,6 +13,9 @@
 #include "logic/mob.h"
 #include "logic/energybuildings.h"
 #include "graphics/gui.h"
+#include "restree/resparser.h"
+
+typedef struct s_game t_game;
 
 typedef struct	s_gfx
 {
@@ -31,10 +33,11 @@ typedef struct	s_gfx
 	int					camy;
 }				t_gfx;
 
-void		gfx_init(t_gfx *gfx);
-void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, t_solarpan* panels, t_batbuilding* bats, int scale, int time, t_evnh* events, int energylvl, t_nrgnetwork* net);
+t_gfx*		gfx_alloc();
+void		gfx_update(t_gfx *gfx, const struct s_game* game);
 void		gfx_cleanup(t_gfx* gfx);
 void		gfx_mixsprite(SDL_Surface *dest, t_sprite* sprite, int x, int y, double scale);
-void		gfx_drawgui(SDL_Surface* surface, t_gui* gui, t_evnh* events);
+void		gfx_drawgui(SDL_Surface* surface, t_gui* gui);
+void		plot_worldline(SDL_Surface* surface, t_fpoint apt, uint32_t cola, t_fpoint bpt, uint32_t colb, t_fpoint campos, double zoom, t_ipoint winfalfsize);
 
 #endif

@@ -5,11 +5,13 @@
 #include <stdio.h>
 #include "logic/player.h"
 #include "misc/intersect.h"
+#include "qtree/disk.h"
 
-static t_mob*	mob_createlist(double x, double y, int time)
+static t_mob*	mob_createlist(double x, double y, int time, t_qtree* qtree)
 {
-	t_mob *newlist;
-	static unsigned int counter = 0;
+	t_mob				*newlist;
+	static unsigned int	counter = 0;
+	t_qtpoint			pt;
 
 	newlist = (t_mob*)malloc(sizeof(t_mob));
 	newlist->x = x;
@@ -20,6 +22,9 @@ static t_mob*	mob_createlist(double x, double y, int time)
 	newlist->next = NULL;
 	newlist->id = counter;
 	counter += 1;
+	pt.data = newlist;
+	pt.shape = disk_create(MOB_SIZE, 0xFF0000, x, y);
+	qtree_insert(qtree, &pt);
 	return (newlist);
 }
 
@@ -36,20 +41,21 @@ int			mob_getcount(t_mob* mobs)
 	return (i);
 }
 
-void		mob_add(t_mob** list, double x, double y, int time)
+t_mob*		mob_add(t_mob** list, double x, double y, int time, t_qtree* qtree)
 {
 	t_mob	*first;
 
 	if ((*list) == NULL)
 	{
-		*list = mob_createlist(x, y, time);
-		return ;
+		*list = mob_createlist(x, y, time, qtree);
+		return (*list);
 	}
 	first = *list;
 	while ((*list)->next)
 		*list = (*list)->next;
-	(*list)->next = mob_createlist(x, y, time);
+	(*list)->next = mob_createlist(x, y, time, qtree);
 	*list = first;
+	return (*list);
 }
 
 static void		mob_updateangle(t_mob *mob, double dir_x, double dir_y)
@@ -77,18 +83,30 @@ static void		mob_moveto(t_mob *mob, double x, double y, double speed, double* ne
 	*newy = mob->y + movy;
 }
 
-void		mob_destroy(t_mob* list)
+static bool			_mobideq(t_qtpoint* pt, void* data)
+{
+	t_mob*			mob;
+	unsigned int*	othermobid;
+
+	mob = pt->data;
+	othermobid = data;
+	if (mob->id == *othermobid)
+		return (true);
+	return (false);
+}
+
+void		mob_destroy(t_mob* list, t_qtree* qtree)
 {
 	t_mob* tmp;
 
 	while (list)
 	{
 		tmp = list->next;
+		qtree_removepointif(qtree, _mobideq, &list->id);
 		free(list);
 		list = tmp;
 	}
 }
-
 
 void		mob_hit(t_mob* mob, double x, double y, double knockback, int dmg)
 {
@@ -102,7 +120,7 @@ void		mob_hit(t_mob* mob, double x, double y, double knockback, int dmg)
 	mob->life -= dmg;
 }
 
-static bool		mob_updateone(t_mob *mob, t_mob* othermobs, t_player* player, int time)
+static bool		mob_updateone(t_mob *mob, t_mob* othermobs, t_player* player, int time, t_qtree* qtree)
 {
 	double		vectorsize;
 	double		trailx;
@@ -135,12 +153,13 @@ static bool		mob_updateone(t_mob *mob, t_mob* othermobs, t_player* player, int t
 	if (mob->life <= 0)
 	{
 		player->score += 1;
+		qtree_removepointif(qtree, _mobideq, &mob->id);
 		return (true);
 	}
 	return (false);
 }
 
-void		mob_update(t_mob** list, t_player* player, int time)
+void		mob_update(t_mob** list, t_player* player, int time, t_qtree* qtree)
 {
 	t_mob	*it;
 	t_mob	*prev;
@@ -151,7 +170,7 @@ void		mob_update(t_mob** list, t_player* player, int time)
 	{
 		if (it->next == NULL)
 		{
-			if (mob_updateone(it, *list, player, time))
+			if (mob_updateone(it, *list, player, time, qtree))
 			{
 				free(it);
 				if (prev == NULL)
@@ -161,7 +180,7 @@ void		mob_update(t_mob** list, t_player* player, int time)
 			}
 			return ;
 		}
-		else if (mob_updateone(it, *list, player, time))
+		else if (mob_updateone(it, *list, player, time, qtree))
 		{
 			if (prev == NULL)
 			{

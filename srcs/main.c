@@ -3,10 +3,10 @@
 #include "misc/save.h"
 #include <stdio.h>
 
-int		main(int argc, char **argv)
+int		main(/*int argc, char **argv*/)
 {
 	t_game	*game;
-	bool	force, new;
+	/*bool	force, new;
 
 	force = false;
 	new = false;
@@ -22,11 +22,12 @@ int		main(int argc, char **argv)
 			printf("Creating new save!\n");
 			new = true;
 		}
-	}
-	game = save_load("saves/current.save", force, new);
+	}*/
+	//game = save_load("saves/current.save", force, new);
+	game = game_create();
 	while (game->running)
 		game_loop(game);
-	save_create("saves/current.save", game);
+	//save_create("saves/current.save", game);
 	game_destroy(game);
 	return (0);
 }

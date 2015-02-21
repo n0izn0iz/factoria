@@ -1,0 +1,21 @@
+<addturret>
+	key=t
+<\>
+<addsolar>
+	key=p
+<\>
+<heal>
+	key=h
+<\>
+<spawnmob>
+	key=m
+<\>
+<addbattery>
+	key=b
+<\>
+<zoom>
+	key=+
+<\>
+<dezoom>
+	key=-
+<\>

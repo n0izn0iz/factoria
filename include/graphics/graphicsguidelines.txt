@@ -1,0 +1,33 @@
+WINDOW COORDINATES:
+
+		0 -----> x
+		|
+		|
+		v
+		y
+
+limits : window size
+
+WORLD COORDINATES:
+
+				  y
+				  ^
+				  |
+				  |
+		-x <----- 0 -----> x
+				  |
+				  |
+				  v
+				 -y
+
+limits : world size
+
+TRANSFORMS TO APPLY TO A POINT:
+
+1) take the world coordinates of this point
+2) subtract the camera position
+3) multiply by the zoom factor
+4) invert the y coordinate
+5) add half the window size
+
+Now you have the position of the point in windows coordinates! :)

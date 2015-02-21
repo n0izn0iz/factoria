@@ -36,14 +36,14 @@ static void		gfx_drawguibox(SDL_Surface* surface, t_guibox* box, int x, int y)
 	}
 }
 
-void			gfx_drawgui(SDL_Surface* surface, t_gui* gui, t_evnh* events)
+void			gfx_drawgui(SDL_Surface* surface, t_gui* gui)
 {
 	t_guibox* box;
 
 	if (gui->boxes->size > 0)
 	{
 		box = array_get(gui->boxes, 0);
-		box->selected = events->selected;
+		box->selected = 0;
 		gfx_drawguibox(surface, box, surface->w / 2, -surface->h + 1);
 	}
 }

@@ -1,7 +1,7 @@
 #include "logic/game.h"
-#include "misc/events.h"
 #include "misc/xp_sleep.h"
 #include <time.h>
+#include "resparser/resparser.h"
 #include <stdlib.h>
 #include <SDL.h>
 #include <stdio.h>
@@ -11,34 +11,82 @@
 #define RAD(x) ((x) * M_PI / 180.f)
 #define SPAWN_RADIUS 2000
 
+static void	_addturret(void* data)
+{
+	t_game* game;
+
+	game = data;
+	turret_add(&(game->turrets), game->player->x, game->player->y, &(game->turretcount), game->tickcount, &game->nrgnet);
+}
+
+static void	_addsolar(void* data)
+{
+	t_game* game;
+
+	game = data;
+	solarpan_add(&game->panels, game->player->x, game->player->y, &game->nrgnet);
+}
+
+static void	_addbattery(void* data)
+{
+	t_game* game;
+
+	game = data;
+	batbuilding_add(&game->bats, game->player->x, game->player->y, &game->nrgnet);
+}
+
+static void	_heal(void* data)
+{
+	t_game* game;
+
+	game = data;
+	game->player->life = PLAYER_MAXLIFE;
+}
+
+static void	_spawnmob(void* data)
+{
+	t_game* game;
+
+	game = data;
+	mob_add(&(game->mobs), game->player->x, game->player->y, game->tickcount, game->qtree);
+}
+
 t_game*		game_create(void)
 {
-	t_game*			game;
-	static t_gfx	gfx;
+	t_game*				game;
+	t_frect				worldbounds;
+	t_resnode*			bindings;
+	t_array*			callbacks;
 
-	game = malloc(sizeof(t_game));
+	game = (t_game*)malloc(sizeof(t_game));
 	if (game != NULL)
 	{
-		game->gfx = &gfx;
-		game->player = malloc(sizeof(t_player));
-		gfx_init(&gfx);
-		game->events = events_create();
-		game->player->x = 0;
-		game->player->y = 0;
-		game->player->life = PLAYER_MAXLIFE;
-		game->turretcount = 0;
+		srand(time(NULL));
 		game->tickcount = 0;
+		bindings = resparser_filetotree("res/bindings.res");
+		game->events = events_alloc(bindings);
+		callbacks = array_create(10);
+		array_append(callbacks, events_callbackalloc("addturret", game, _addturret));
+		array_append(callbacks, events_callbackalloc("addsolar", game, _addsolar));
+		array_append(callbacks, events_callbackalloc("addbattery", game, _addbattery));
+		array_append(callbacks, events_callbackalloc("heal", game, _heal));
+		array_append(callbacks, events_callbackalloc("spawnmob", game, _spawnmob));
+		events_registercallbackarray(game->events, callbacks);
+		array_destroy(callbacks);
+		game->worldsize = fpoint_create(5000, 5000);
+		worldbounds = frect_create(fpoint_create(0, 0), game->worldsize);
+		game->qtree = qtree_alloc(&worldbounds);
+		game->player = player_alloc(0, 0, 0);
+		game->gfx = gfx_alloc();
 		game->bullets = NULL;
 		game->mobs = NULL;
-		game->running = true;
 		game->lastspawn = 0;
 		game->spawnfreq = 100;
 		game->shouldsave = true;
 		game->nrgnet = NULL;
 		game->panels = NULL;
 		game->bats = NULL;
-		srand(time(NULL));
-		game->player->score = 0;
+		game->running = true;
 	}
 	return (game);
 }
@@ -54,7 +102,7 @@ static void	game_spawnmobs(t_game *game)
 		angle = rand() % 360;
 		xoff = SPAWN_RADIUS * cos(RAD(angle)) + game->player->x;
 		yoff = SPAWN_RADIUS * sin(RAD(angle)) + game->player->y;
-		mob_add(&(game->mobs), xoff, yoff, game->tickcount);
+		mob_add(&(game->mobs), xoff, yoff, game->tickcount, game->qtree);
 		game->lastspawn = game->tickcount;
 		game->spawnfreq -= 1;
 		game->spawnfreq = game->spawnfreq < 2 ? 2 : game->spawnfreq;
@@ -63,50 +111,19 @@ static void	game_spawnmobs(t_game *game)
 
 void		game_loop(t_game *game)
 {
-	int			playerx;
-	int			playery;
 	t_mob*		mob;
-	int i;
-	t_nrgnetwork*	tmpnet;
 
 	events_update(game->events);
 	if (game->events->quitflag == true)
 		game->running = false;
 	player_updatedirection(game->player, game->events->mov_x, game->events->mov_y);
-	playerx = game->player->x;
-	playery = game->player->y;
 	game_spawnmobs(game);
-	if (game->events->solarpanelflag == true)
-	{
-		solarpan_add(&game->panels, playerx, playery, &game->nrgnet);
-		game->events->solarpanelflag = false;
-	}
-	if (game->events->batteryflag == true)
-	{
-		batbuilding_add(&game->bats, playerx, playery, &game->nrgnet);
-		game->events->batteryflag = false;
-	}
 	nrg_updatenetworks(&game->nrgnet);
-	if (game->events->spawnmobflag == true)
-	{
-		mob_add(&(game->mobs), playerx, playery, game->tickcount);
-		game->events->spawnmobflag = false;
-	}
-	if (game->events->healflag == true)
-	{
-		game->player->life = PLAYER_MAXLIFE;
-		game->events->healflag = false;
-	}
 	if (game->player->life <= 0)
 	{
 		printf("Game over!\n");
 		game->shouldsave = false;
 		game->running = false;
-	}
-	if (game->events->turretflag == true)
-	{
-		turret_add(&(game->turrets), playerx, playery, &(game->turretcount), game->tickcount, &game->nrgnet);
-		game->events->turretflag = false;
 	}
 	mob = game->mobs;
 	while (mob)
@@ -115,24 +132,16 @@ void		game_loop(t_game *game)
 		mob = mob->next;
 	}
 	bullet_update(&(game->bullets), game->player, game->mobs);
-	mob_update(&(game->mobs), game->player, game->tickcount);
-	gfx_update(game->gfx, game->turrets, game->turretcount, game->bullets, game->player, game->mobs, game->panels, game->bats, game->events->scale, game->tickcount, game->events, game->nrgnet ? game->nrgnet->capacity : 0, game->nrgnet);
+	mob_update(&(game->mobs), game->player, game->tickcount, game->qtree);
+	gfx_update(game->gfx, game);
 	game->tickcount += 1;
-	i = 0;
-	tmpnet = game->nrgnet;
-	while (tmpnet)
-	{
-		i++;
-		tmpnet = tmpnet->next;
-	}
-	printf("%i networks\n", i);
 }
 
 void		game_destroy(t_game *game)
 {
 	gfx_cleanup(game->gfx);
 	bullet_destroy(game->bullets);
-	mob_destroy(game->mobs);
+	mob_destroy(game->mobs, game->qtree);
 	free(game->turrets);
 	free(game->events);
 	free(game->player);

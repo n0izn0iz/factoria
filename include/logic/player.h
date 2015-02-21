@@ -16,13 +16,14 @@ typedef enum	e_direction
 
 typedef struct	s_player
 {
-	int32_t			x;
-	int32_t			y;
+	double			x;
+	double			y;
 	t_direction		direction;
 	int				life;
 	int				score;
 }				t_player;
 
+t_player*		player_alloc(double x, double y, int score);
 void			player_updatedirection(t_player* player, int movx, int movy);
 
 #endif

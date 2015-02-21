@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "misc/intersect.h"
+#include "graphics/treerenderer.h"
+#include "logic/game.h"
 
 #define LIFEBAR_WIDTH 5
 
@@ -285,6 +287,18 @@ static void		gfx_drawrange(t_sdlh* sdlh, t_nrgnetwork* nets, uint32_t color, dou
 	}
 }
 
+t_gfx*			gfx_alloc()
+{
+	t_gfx* gfx;
+
+	gfx = (t_gfx*)malloc(sizeof(t_gfx));
+	if (gfx != NULL)
+	{
+		gfx_init(gfx);
+	}
+	return (gfx);
+}
+
 void			gfx_init(t_gfx *gfx)
 {
 	static t_sdlh sdlh;
@@ -297,7 +311,7 @@ void			gfx_init(t_gfx *gfx)
 	gfx->camy = 0;
 }
 
-void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bullets, t_player *player, t_mob* mobs, t_solarpan* panels, t_batbuilding* bats, int scale, int time, t_evnh* events, int energylvl, t_nrgnetwork* net)
+void		gfx_update(t_gfx *gfx, const t_game* game)
 {
 	unsigned int			x;
 	unsigned int			y;
@@ -310,7 +324,36 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	static double fps = 0;
 	static uint32_t lastframe = 0;
 	char	str[20];
+	t_player* player;
+	double		scale;
+	t_nrgnetwork* net;
+	t_batbuilding*	bats;
+	t_solarpan*		panels;
+	int		turretcount;
+	t_turret*	turrets;
+	t_mob*		mobs;
+	unsigned int time;
+	time = game->tickcount;
+	t_bullet*	bullets;
+	int			energylvl;
+	t_fpoint campos;
+	t_ipoint winhalfsize;
 
+	winhalfsize.x = WIN_WIDTH / 2;
+	winhalfsize.y = WIN_HEIGHT / 2;
+	bullets = game->bullets;
+	mobs = game->mobs;
+	turrets = game->turrets;
+	turretcount = game->turretcount;
+	panels = game->panels;
+	bats = game->bats;
+	net = game->nrgnet;
+	energylvl = 0;
+	if (net != NULL)
+		energylvl = net->capacity;
+	scale = /*game->events->scale*/1;
+	player = game->player;
+	campos = fpoint_create(player->x, player->y);
 	gfx->camx = player->x / scale;
 	gfx->camy = player->y / scale;
 	winx = gfx->camx - (WIN_WIDTH / 2);
@@ -337,8 +380,8 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	else
 		sprite = gfx->playersprite->front;
 	gfx_drawsoil(gfx->soilsprite, gfx->sdlh->surface, winx, winy, scale);
-	if (events->drawgrid)
-		gfx_drawrange(gfx->sdlh, net, 0x00FF00, NRG_RANGE / 2, winx, winy);
+	/*if (events->drawgrid)
+		gfx_drawrange(gfx->sdlh, net, 0x00FF00, NRG_RANGE / 2, winx, winy);*/
 	x = 0;
 	while (panels)
 	{
@@ -365,8 +408,8 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 		gfx_drawbullet(bullet, gfx->sdlh, scale, winx, winy);
 		bullet = bullet->next;
 	}
-	if (events->drawgrid)
-		drawgrid(gfx->sdlh, player->x % GRID_SIZE, player->y % GRID_SIZE);
+	/*if (events->drawgrid)
+		drawgrid(gfx->sdlh, player->x % GRID_SIZE, player->y % GRID_SIZE);*/
 	gfx_drawlife(gfx->sdlh, 0, -WIN_HEIGHT + 1, 2, LIFEBAR_WIDTH, player->life, PLAYER_MAXLIFE);
 	gfx_drawenergy(gfx->sdlh, energylvl, WIN_WIDTH - 10, -WIN_HEIGHT + 1, 1, 10);
 	fps = (fps * 0.9) + ((1000.0 / (SDL_GetTicks() - lastframe)) * 0.1);
@@ -374,8 +417,13 @@ void		gfx_update(t_gfx *gfx, t_turret *turrets, int turretcount, t_bullet *bulle
 	snprintf(str, 20, "FPS:%.0f", fps);
 	testtext = fonts_texttosurface(str, "fonts/8bit.ttf", 0x000, gfx->sdlh->surface->format);
 	SDL_BlitSurface(testtext, NULL, gfx->sdlh->surface, NULL);
+	t_fpoint	winoff = fpoint_create(winx, winy);
 	SDL_FreeSurface(testtext);
-	gfx_drawgui(gfx->sdlh->surface, gfx->gui, events);
+	campos.y = -campos.y;
+	winoff.y = -winoff.y;
+	(void)gfx_drawrange;
+	drawtree(gfx->sdlh, game->qtree, &campos, &winhalfsize, 1 / scale, true);
+	gfx_drawgui(gfx->sdlh->surface, gfx->gui);
 	sdlh_update_window(gfx->sdlh);
 }
 

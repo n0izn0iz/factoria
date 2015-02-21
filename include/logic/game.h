@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <stdbool.h>
-#include "misc/events.h"
+#include "qtree/qtree.h"
 #include "graphics/graphics.h"
 #include "logic/player.h"
 #include "logic/turret.h"
@@ -10,11 +10,13 @@
 #include "logic/energy.h"
 #include "logic/energybuildings.h"
 #include "logic/mob.h"
+#include "events/events.h"
 
 typedef struct		s_game
 {
 	bool			running;
-	t_evnh*			events;
+	t_events*		events;
+	t_fpoint		worldsize;
 	t_gfx*			gfx;
 	t_player*		player;
 	t_turret*		turrets;
@@ -23,6 +25,7 @@ typedef struct		s_game
 	t_nrgnetwork*	nrgnet;
 	t_solarpan*		panels;
 	t_batbuilding*	bats;
+	t_qtree*		qtree;
 	int				turretcount;
 	unsigned int	tickcount;
 	int				lastspawn;

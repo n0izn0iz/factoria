@@ -6,16 +6,14 @@
 typedef struct		s_evnh
 {
 	bool			quitflag;
-	bool			turretflag;
-	bool			healflag;
-	bool			spawnmobflag;
-	bool			drawgrid;
-	bool			batteryflag;
-	bool			solarpanelflag;
-	unsigned int	selected;
+	bool			insertflag;
+	bool			play;
+	int				mouse_x;
+	int				mouse_y;
 	int				mov_x;
 	int				mov_y;
-	int				scale;
+	double			zoom;
+	bool			drawgrid;
 }					t_evnh;
 
 
