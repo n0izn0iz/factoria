@@ -1,7 +1,7 @@
 #ifndef SDLHANDLER_H
 #define SDLHANDLER_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdint.h>
 
 #define WIN_WIDTH 800

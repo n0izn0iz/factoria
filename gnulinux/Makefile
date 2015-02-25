@@ -3,8 +3,8 @@ NAME=../factoria-gnulinux
 SRCS=../srcs/main.c $(wildcard ../srcs/*/*.c)
 OBJS=$(patsubst ../srcs/%.c,../objs/%.o,$(SRCS))
 SDLPREFIX=$(shell pwd)/sdlinstall
-LD_FLAGS=-Wl,-rpath=lib -lpthread -lm -Lsdlinstall/lib -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf
-C_FLAGS=-Wall -Wextra -Werror -g -D_REENTRANT -I../include -Isdlinstall/include/SDL2
+LD_FLAGS=-Wl,-rpath=lib -lpthread -lm -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lGLEW -lGL
+C_FLAGS=-Wall -Wextra -Werror -g -D_REENTRANT -I../include
 SDLLIB=$(SDLPREFIX)/lib/libSDL2.so
 SDLTTF=$(SDLPREFIX)/lib/libSDL2_ttf.so
 SDLGFX=$(SDLPREFIX)/lib/libSDL2_gfx.so

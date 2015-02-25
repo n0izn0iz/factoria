@@ -2,7 +2,6 @@
 #define GRAPHICS_H
 
 #include <stdbool.h>
-#include "graphics/animation.h"
 #include "misc/sdlhandler.h"
 #include "graphics/playerrend.h"
 #include "graphics/sprite.h"
@@ -13,21 +12,15 @@
 #include "logic/mob.h"
 #include "logic/energybuildings.h"
 #include "graphics/gui.h"
-#include "restree/resparser.h"
+#include "resparser/resparser.h"
+#include "graphics/gfxcontext.h"
 
 typedef struct s_game t_game;
 
 typedef struct	s_gfx
 {
 	t_sdlh				*sdlh;
-	t_playersprite		*playersprite;
-	t_sprite			*turretsprite;
-	t_sprite			*soilsprite;
-	t_sprite			*solarpansprite;
-	t_sprite			*shipsprite;
-	t_sprite			*batsprite;
-	t_anim				*mobanim;
-	t_sprite			*standsprite;
+	t_gfxcontext		context;
 	t_gui*				gui;
 	int					camx;
 	int					camy;

@@ -11,10 +11,12 @@
 #include "logic/energybuildings.h"
 #include "logic/mob.h"
 #include "events/events.h"
+#include "misc/ticks.h"
 
 typedef struct		s_game
 {
 	bool			running;
+	t_ticker		ticker;
 	t_events*		events;
 	t_fpoint		worldsize;
 	t_gfx*			gfx;

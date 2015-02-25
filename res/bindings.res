@@ -2,20 +2,23 @@
 	key=t
 <\>
 <addsolar>
-	key=p
+	key=n
 <\>
 <heal>
 	key=h
 <\>
 <spawnmob>
-	key=m
+	key=o
 <\>
 <addbattery>
 	key=b
 <\>
 <zoom>
-	key=+
+	key=p
 <\>
 <dezoom>
-	key=-
+	key=m
+<\>
+<gridswitch>
+	key=g
 <\>

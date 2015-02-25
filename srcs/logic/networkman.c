@@ -115,15 +115,9 @@ void*			nrg_addnode(t_nrgnetwork** networks, int nodetype, double x, double y, d
 	netcount = nrg_networksinrange(networks, &netsinrange, x, y, range);
 	assert(netcount >= 0 && nodetype != NT_UNKNOWN);
 	if (netcount == 0)
-	{
-		printf("Create\n");
 		tmpnet = nrg_addnetwork(networks, NULL, NULL, NULL);
-	}
 	else if (netcount == 1)
-	{
-		printf("Add\n");
 		tmpnet = *netsinrange;
-	}
 	else
 	{
 		printf ("Merge %i nets\n", netcount);

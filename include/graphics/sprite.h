@@ -1,7 +1,7 @@
 #ifndef SPRITE_H
 # define SPRITE_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 typedef struct		s_sprite
 {

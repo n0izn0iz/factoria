@@ -3,7 +3,7 @@
 #include <time.h>
 #include "resparser/resparser.h"
 #include <stdlib.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdio.h>
@@ -62,6 +62,7 @@ t_game*		game_create(void)
 	if (game != NULL)
 	{
 		srand(time(NULL));
+		game->ticker = ticker_create(50.0, 0.0);
 		game->tickcount = 0;
 		bindings = resparser_filetotree("res/bindings.res");
 		game->events = events_alloc(bindings);
@@ -77,7 +78,7 @@ t_game*		game_create(void)
 		worldbounds = frect_create(fpoint_create(0, 0), game->worldsize);
 		game->qtree = qtree_alloc(&worldbounds);
 		game->player = player_alloc(0, 0, 0);
-		game->gfx = gfx_alloc();
+		game->gfx = gfx_alloc(game->events);
 		game->bullets = NULL;
 		game->mobs = NULL;
 		game->lastspawn = 0;
@@ -134,6 +135,7 @@ void		game_loop(t_game *game)
 	bullet_update(&(game->bullets), game->player, game->mobs);
 	mob_update(&(game->mobs), game->player, game->tickcount, game->qtree);
 	gfx_update(game->gfx, game);
+	ticker_update(&game->ticker);
 	game->tickcount += 1;
 }
 

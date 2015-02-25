@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "graphics/sprite.h"
 
 t_sprite*			sprite_create(SDL_Surface* surface, int tox, int toy, int sox, int soy, int width, int height)

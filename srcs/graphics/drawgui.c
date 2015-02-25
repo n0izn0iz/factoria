@@ -7,7 +7,8 @@ static void		gfx_drawguibutton(SDL_Surface* surface, t_guibutton* button, int x,
 {
 	int i;
 
-	gfx_mixsprite(surface, button->sprite, x, y, 1);
+	//gfx_mixsprite(surface, button->sprite, x, y, 1);
+	(void)button;
 	i = 0;
 	while (i < BUTTON_SIZE)
 	{

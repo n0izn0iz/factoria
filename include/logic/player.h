@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define PLAYER_SIZE 10
 #define PLAYER_MAXLIFE 100
@@ -19,6 +20,7 @@ typedef struct	s_player
 	double			x;
 	double			y;
 	t_direction		direction;
+	bool			moving;
 	int				life;
 	int				score;
 }				t_player;

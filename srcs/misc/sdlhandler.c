@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 #include "misc/strjoin.h"
 #include "misc/sdlhandler.h"

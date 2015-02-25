@@ -1,0 +1,26 @@
+<ship>
+	file=sprites/ship.bmp
+<\>
+<player>
+	file=sprites/marine.bmp
+	animated
+	framesnbr=08
+<\>
+<mob>
+	file=sprites/aliennew.bmp
+	animated
+	framesnbr=09
+<\>
+<turret>
+	file=sprites/turretnew.bmp
+<\>
+<solar>
+	file=sprites/solar.bmp
+<\>
+<battery>
+	file=sprites/generatornew.bmp
+	animated
+	framesnbr=02
+<\>
+<ground>
+	file=sprites/ground.bmp

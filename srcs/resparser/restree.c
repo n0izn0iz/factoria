@@ -88,6 +88,8 @@ t_resnode*		resnode_getchildbyname(t_resnode* node, char* name)
 	t_array*		childs;
 	t_resnode*		child;
 
+	if (node == NULL)
+		return (NULL);
 	childs = node->childs;
 	i = 0;
 	while (i < childs->size)
